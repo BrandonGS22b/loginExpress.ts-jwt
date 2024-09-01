@@ -4,7 +4,7 @@
 
 Para configurar y ejecutar el proyecto `loginExpress.ts-jwt`, sigue estos pasos:
 
-1. **Inicializa un nuevo proyecto Node.js:**
+1. **DEPENDEMCIAS REQUERIDAD PARA ESTE PROYECTO BACKEND:**
    ```bash
    npm i
 
