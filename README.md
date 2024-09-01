@@ -1,4 +1,11 @@
 # loginExpress.ts-jwt
+
+## Instalación de Dependencias
+
+Para configurar y ejecutar el proyecto `loginExpress.ts-jwt`, sigue los siguientes pasos:
+
+1. **Inicializa un nuevo proyecto Node.js:**
+   ```bash
 1.instalamos dependencias
 *npm i
 *npm i -g typescript
@@ -15,3 +22,4 @@
 *npm install express-fileupload
 *npm install @types/uuid --save-dev
 *npm install uuid
+```
