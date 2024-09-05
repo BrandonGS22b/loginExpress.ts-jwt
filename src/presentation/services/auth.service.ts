@@ -15,7 +15,7 @@ export class AuthService {
   public async registerUser(registerUserDto: RegisterUserDto) {
     const existUser = await UserModel.findOne({ email: registerUserDto.email });
     if (existUser) throw new Error('Email already exists');
-
+  
     try {
       const user = new UserModel(registerUserDto);
       
@@ -23,22 +23,26 @@ export class AuthService {
       user.password = bcryptAdapter.hash(registerUserDto.password);
       
       await user.save();
-
+  
       // Email de confirmación
       await this.sendEmailValidationLink(user.email);
-
+  
       const { password, ...userEntity } = user.toObject(); // No usar UserEntity
-
+  
       const token = await JwtAdapter.generateToken({ id: user.id });
       if (!token) throw new Error('Error while creating JWT');
-
+  
       return { 
         user: userEntity, 
         token: token,
       };
-
+  
     } catch (error) {
-      throw new Error(`Internal server error: ${error}`);
+      if (error instanceof Error) {
+        throw new Error(`Internal server error: ${error.message}`);
+      } else {
+        throw new Error('An unknown error occurred');
+      }
     }
   }
 
@@ -57,12 +61,12 @@ export class AuthService {
     return {
       user: userEntity,
       token: token,
-    }
+    };
   }
 
   private sendEmailValidationLink = async(email: string) => {
     const token = await JwtAdapter.generateToken({ email });
-    if (!token) throw new Error('Error getting token');
+    if (!token) throw new Error('Error generating token');
 
     const link = `${envs.WEBSERVICE_URL}/auth/validate-email/${token}`;
     const html = `
@@ -75,7 +79,7 @@ export class AuthService {
       to: email,
       subject: 'Validate your email',
       htmlBody: html,
-    }
+    };
 
     const isSent = await this.emailService.sendEmail(options);
     if (!isSent) throw new Error('Error sending email');
@@ -98,4 +102,14 @@ export class AuthService {
 
     return true;
   }
+
+  public async getAllUsers() {
+    try {
+      const users = await UserModel.find(); // Busca todos los usuarios
+      return users;
+    } catch (error) {
+      throw new Error('Error fetching users');
+    }
+  }
+
 }

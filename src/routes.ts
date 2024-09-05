@@ -9,6 +9,8 @@ import { Authroutes } from './presentation/authLogin/routes';
 
 
 
+
+
 export class AppRoutes {
 
 
@@ -18,10 +20,13 @@ export class AppRoutes {
     
     // Definir las rutas
     router.use('/api/auth', Authroutes.routes );
+   
+
     //router.use('/api/categories', CategoryRoutes.routes );
     //router.use('/api/products', ProductRoutes.routes );
     //router.use('/api/upload', FileUploadRoutes.routes );
     //router.use('/api/images', ImageRoutes.routes );
+    //router.use('/api/routes', FileRoutes.r
     
 
 
