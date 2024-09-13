@@ -9,7 +9,7 @@ export class MongoDatabase {
     try {
       await mongoose.connect(mongoUrl, {
         dbName: dbName,
-        ssl: true, // Habilitar SSL si es necesario para MongoDB Atlas
+        // Nota: No es necesario especificar `ssl: true` para `mongodb+srv`
       });
 
       console.log('Conectado a MongoDB Atlas');
