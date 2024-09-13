@@ -22,7 +22,9 @@ class MongoDatabase {
             try {
                 yield mongoose_1.default.connect(mongoUrl, {
                     dbName: dbName,
-                    // Nota: No es necesario especificar `ssl: true` para `mongodb+srv`
+                    tls: true, // Habilita TLS explícitamente
+                    tlsAllowInvalidCertificates: false, // Configura según tus necesidades
+                    tlsAllowInvalidHostnames: false, // Configura según tus necesidades
                 });
                 console.log('Conectado a MongoDB Atlas');
                 return true;
