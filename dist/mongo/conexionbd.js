@@ -15,17 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDatabase = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 class MongoDatabase {
-    static connect(options) {
+    static connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            const { mongoUrl, dbName } = options;
+            const mongoUrl = 'mongodb+srv://brandon222b:i4XpuZK7HCbZ6I1N@cluster0.fn3zw.mongodb.net/mystore';
+            const dbName = 'mystore';
             try {
                 yield mongoose_1.default.connect(mongoUrl, {
                     dbName: dbName,
+                    ssl: true, // Habilitar SSL si es necesario para MongoDB Atlas
                 });
+                console.log('Conectado a MongoDB Atlas');
                 return true;
             }
             catch (error) {
-                console.log('Mongo connection error');
+                console.error('Error de conexión a MongoDB:', error);
                 throw error;
             }
         });

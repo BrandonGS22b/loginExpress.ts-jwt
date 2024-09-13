@@ -9,21 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const envs_1 = require("./config/envs");
 const conexionbd_1 = require("./mongo/conexionbd");
 const routes_1 = require("./routes");
 const server_1 = require("./presentation/server");
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    main();
+    yield main();
 }))();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield conexionbd_1.MongoDatabase.connect({
-            dbName: envs_1.envs.MONGO_DB_NAME,
-            mongoUrl: envs_1.envs.MONGO_URL,
-        });
+        // Conexión directa a MongoDB
+        yield conexionbd_1.MongoDatabase.connect();
+        // Configuración del servidor
         const server = new server_1.Server({
-            port: envs_1.envs.PORT,
+            port: 3000, // Puerto definido directamente
             routes: routes_1.AppRoutes.routes,
         });
         server.start();

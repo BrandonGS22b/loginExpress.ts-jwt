@@ -41,8 +41,9 @@ class Server {
                 const indexPath = path_1.default.join(__dirname + `../../../${this.publicPath}/index.html`);
                 res.sendFile(indexPath);
             });
+            //* Start Server
             this.serverListener = this.app.listen(this.port, () => {
-                console.log(`Server running on port y usted lo mama riko me levanto el: ${this.port}`);
+                console.log(`Servidor corriendo en el puerto: ${this.port}`);
             });
         });
     }
