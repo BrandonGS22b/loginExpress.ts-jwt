@@ -9,9 +9,9 @@ export class MongoDatabase {
     try {
       await mongoose.connect(mongoUrl, {
         dbName: dbName,
-        tls: true, // Habilita TLS explícitamente
-        tlsAllowInvalidCertificates: false, // Configura según tus necesidades
-        tlsAllowInvalidHostnames: false, // Configura según tus necesidades
+        tls: true, // Asegúrate de que TLS esté habilitado
+        tlsAllowInvalidCertificates: false,
+        tlsAllowInvalidHostnames: false,
       });
 
       console.log('Conectado a MongoDB Atlas');
