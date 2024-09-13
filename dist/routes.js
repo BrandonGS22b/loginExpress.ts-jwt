@@ -12,6 +12,7 @@ class AppRoutes {
         const router = (0, express_1.Router)();
         // Definir las rutas
         router.use('/api/auth', routes_1.Authroutes.routes);
+        //continuacion 
         //router.use('/api/categories', CategoryRoutes.routes );
         //router.use('/api/products', ProductRoutes.routes );
         //router.use('/api/upload', FileUploadRoutes.routes );
