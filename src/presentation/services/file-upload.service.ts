@@ -4,10 +4,15 @@ import fs from 'fs';
 import { UploadedFile } from 'express-fileupload';
 
 import { Uuid } from '../../config';
-import { CustomError } from '../../domain';
 
 
 
+//para los errores
+export class CustomError extends Error {
+  static badRequest(message: string) {
+    return new CustomError(message);
+  }
+}
 
 export class FileUploadService {
 
