@@ -17,8 +17,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 class MongoDatabase {
     static connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            const mongoUrl = 'mongodb+srv://UTS:uts2024@uts.ccyqodk.mongodb.net/Dev2024E191?retryWrites=true&w=majority&appName=UTS/Usuario';
-            const dbName = 'Usuario';
+            const mongoUrl = 'mongodb+srv://brandon222b:i4XpuZK7HCbZ6I1N@cluster0.fn3zw.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsInsecure=true';
+            const dbName = 'mystore';
             try {
                 yield mongoose_1.default.connect(mongoUrl, {
                     dbName: dbName,
