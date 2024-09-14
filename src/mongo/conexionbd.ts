@@ -4,7 +4,7 @@ export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
     const mongoUrl = 'mongodb+srv://brandon222b:i4XpuZK7HCbZ6I1N@cluster0.fn3zw.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsInsecure=true';
-   
+   //nevo
     const dbName = 'mystore';
 
     try {
