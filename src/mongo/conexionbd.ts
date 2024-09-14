@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
-    const mongoUrl = 'mongodb+srv://brandon222b:i4XpuZK7HCbZ6I1N@cluster0.fn3zw.mongodb.net/?retryWrites=true&w=majority&tls=true&tlsInsecure=true';
+    const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/?retryWrites=true&w=majority&appName=brandong';
    //nevo
-    const dbName = 'mystore';
+    const dbName = 'brandong';
 
     try {
       await mongoose.connect(mongoUrl, {
