@@ -17,7 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 class MongoDatabase {
     static connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/?retryWrites=true&w=majority&appName=brandong';
+            const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@uts.ccyqodk.mongodb.net/Dev2024E191?retryWrites=true&w=majority&appName=brandong/brandong';
             const dbName = 'brandong';
             // Habilitar logs detallados de Mongoose
             mongoose_1.default.set('debug', true);

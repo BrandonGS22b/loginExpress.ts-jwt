@@ -3,16 +3,17 @@ import mongoose from 'mongoose';
 export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
-    const mongoUrl = 'mongodb+srv://UTS:uts2024@uts.ccyqodk.mongodb.net/Dev2024E191?retryWrites=true&w=majority&appName=UTS/brandong';
+    // URL de conexión a MongoDB Atlas
+    const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/?retryWrites=true&w=majority';
     const dbName = 'brandong';
 
-    // Habilitar logs detallados de Mongoose
+    // Habilitar logs detallados de Mongoose para depuración
     mongoose.set('debug', true);
 
     try {
       await mongoose.connect(mongoUrl, {
-        dbName: dbName,
-        tlsAllowInvalidCertificates: true, // Permite certificados no válidos
+        dbName: dbName,  // Nombre de la base de datos
+        tlsAllowInvalidCertificates: true, // Permitir certificados no válidos (considerar eliminar en producción)
       });
 
       console.log('Conectado a MongoDB Atlas');
