@@ -17,14 +17,12 @@ const mongoose_1 = __importDefault(require("mongoose"));
 class MongoDatabase {
     static connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            const mongoUrl = 'mongodb+srv://brandon222b:i4XpuZK7HCbZ6I1N@cluster0.fn3zw.mongodb.net/mystore';
-            const dbName = 'mystore';
+            const mongoUrl = 'mongodb+srv://UTS:uts2024@uts.ccyqodk.mongodb.net/Dev2024E191?retryWrites=true&w=majority&appName=UTS/Usuario';
+            const dbName = 'Usuario';
             try {
                 yield mongoose_1.default.connect(mongoUrl, {
                     dbName: dbName,
-                    tls: true, // Habilita TLS explícitamente
-                    tlsAllowInvalidCertificates: false, // Configura según tus necesidades
-                    tlsAllowInvalidHostnames: false, // Configura según tus necesidades
+                    // Usar configuración mínima para probar la conexión
                 });
                 console.log('Conectado a MongoDB Atlas');
                 return true;
