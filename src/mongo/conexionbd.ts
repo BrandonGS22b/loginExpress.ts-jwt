@@ -4,13 +4,15 @@ export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
     const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/?retryWrites=true&w=majority&appName=brandong';
-   //nevo
     const dbName = 'brandong';
+
+    // Habilitar logs detallados de Mongoose
+    mongoose.set('debug', true);
 
     try {
       await mongoose.connect(mongoUrl, {
         dbName: dbName,
-        // Usar configuración mínima para probar la conexión
+        tlsAllowInvalidCertificates: true, // Permite certificados no válidos
       });
 
       console.log('Conectado a MongoDB Atlas');
