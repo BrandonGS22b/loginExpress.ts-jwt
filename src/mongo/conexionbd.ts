@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
-    const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/?retryWrites=true&w=majority&appName=brandong';
+    const mongoUrl = 'mongodb+srv://UTS:uts2024@uts.ccyqodk.mongodb.net/Dev2024E191?retryWrites=true&w=majority&appName=UTS/brandong';
     const dbName = 'brandong';
 
     // Habilitar logs detallados de Mongoose
