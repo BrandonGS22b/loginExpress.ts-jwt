@@ -4,8 +4,8 @@ export class MongoDatabase {
 
   static async connect(): Promise<boolean> {
     // URL de conexión simplificada
-    const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/brandong?retryWrites=true&w=majority&appName=brandong/Usuario';
-
+    const mongoUrl = 'mongodb+srv://brandong:a9AJ8RKP1CrGRjm5@brandong.sawk0.mongodb.net/brandong?retryWrites=true&w=majority&appName=brandong';
+//
     // Habilitar logs detallados de Mongoose para depuración
     mongoose.set('debug', true);
 
