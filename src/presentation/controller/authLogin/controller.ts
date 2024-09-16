@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { LoginUserDto } from '../../auth/login-user.dto';
-import { RegisterUserDto } from '../../auth/register-user.dto';
-import { GetUserDto } from '../../auth/get-user.dto';
-import { AuthService } from '../services/auth.service';
-import { JwtAdapter } from '../../config';
+import { LoginUserDto } from '../../../auth/login-user.dto';
+import { RegisterUserDto } from '../../../auth/register-user.dto';
+import { GetUserDto } from '../../../auth/get-user.dto';
+import { AuthService } from '../../services/auth.service';
+import { JwtAdapter } from '../../../config';
 
-export class AuthController {
+class AuthController {
 
   // DI
   constructor(
@@ -106,3 +106,4 @@ getAllUsers = async (req: Request, res: Response) => {
 
 
 }
+export default AuthController;

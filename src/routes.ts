@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { Authroutes } from './presentation/authLogin/routes';
+import { Authroutes } from './presentation/controller/authLogin/routes';
 //import { CategoryRoutes } from './categories/routes';
 //import { ProductRoutes } from './products/routes';
 //import { FileUploadRoutes } from './file-upload/routes';
