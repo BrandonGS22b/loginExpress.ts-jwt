@@ -14,4 +14,5 @@ const ImageSchema: Schema = new Schema({
   size: { type: Number, required: true },
 });
 
-export const ImageModel = mongoose.model<IImage>('Image', ImageSchema);
+const ImageModel = mongoose.model<IImage>('Image', ImageSchema);
+export default ImageModel;
