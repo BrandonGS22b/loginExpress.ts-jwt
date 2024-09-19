@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import multer from 'multer';
-import { ImageModel } from '../../models/image.model'; // Importa tu modelo de imagen buscalo 
+import { ImageModel } from '../../../mongo/models/image.model'; // Importa tu modelo de imagen buscalo 
 
 // Configuración de multer para almacenar imágenes
 const storage = multer.diskStorage({

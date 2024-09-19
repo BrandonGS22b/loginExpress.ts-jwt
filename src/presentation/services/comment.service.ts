@@ -22,6 +22,18 @@ class CommentService {
     }
   }
 
+  //obtener todos los comentarios por medio de un get 
+  public async getAllComments() {
+    try {
+      const comments = await CommentModel.find();
+      return comments;
+    } catch (error) {
+      throw new Error('Error fetching comments');
+    }
+
+
+  };
+
   public async deleteComment(commentId: string) {
     try {
       const result = await CommentModel.findByIdAndDelete(commentId);

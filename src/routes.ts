@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
-import { Authroutes } from './presentation/controller/authLogin/routes';
+import Authroutes from './presentation/controller/authLogin/routes';  //apunta al router del controller
+import CommentRoutes from './presentation/controller/comment/router';
 //import { CategoryRoutes } from './categories/routes';
 //import { ProductRoutes } from './products/routes';
 //import { FileUploadRoutes } from './file-upload/routes';
@@ -21,6 +22,7 @@ export class AppRoutes {
     // Definir las rutas
     router.use('/api/auth', Authroutes.routes );
    //continuacion 
+   router.use('/api/comment', CommentRoutes.routes );
 
     //router.use('/api/categories', CategoryRoutes.routes );
     //router.use('/api/products', ProductRoutes.routes );

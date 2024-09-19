@@ -20,6 +20,11 @@ class CommentController {
     return res.status(200).json(comments);
   };
 
+  public getAllComments = async (req: Request, res: Response) => {
+    const comments = await this.commentService.getAllComments();
+    return res.status(200).json(comments);
+  };
+
   // Eliminar un comentario por ID
   public deleteComment = async (req: Request, res: Response) => {
     const { commentId } = req.params;
