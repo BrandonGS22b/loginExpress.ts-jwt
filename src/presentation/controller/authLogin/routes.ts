@@ -1,7 +1,7 @@
 import { envs } from '../../../config';
 import { Router } from 'express';
 import AuthController from './controller';
-import CommentController from '../comment/commentcontroller';
+
 import { AuthService, EmailService } from '../../services';
 
 
