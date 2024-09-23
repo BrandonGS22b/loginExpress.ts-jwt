@@ -1,6 +1,7 @@
 import path from 'path';
 import express, { Router } from 'express';
 import fileUpload from 'express-fileupload';
+import cors from 'cors'; // Importa CORS
 
 interface Options {
   port: number;
@@ -24,18 +25,25 @@ export class Server {
 
   async start() {
     //* Middlewares
+
+    // Configurar CORS antes de definir rutas
+    this.app.use(cors());
+
+    // Configuración para parsear JSON y formularios
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
+    
+    // Configuración para subir archivos
     this.app.use(
       fileUpload({
-        limits: { fileSize: 50 * 1024 * 1024 },
+        limits: { fileSize: 50 * 1024 * 1024 }, // Limite de 50 MB
       })
     );
 
-    //* Public Folder
+    //* Carpeta pública
     this.app.use(express.static(this.publicPath));
 
-    //* Routes
+    //* Definir rutas
     this.app.use(this.routes);
 
     //* SPA
@@ -44,7 +52,7 @@ export class Server {
       res.sendFile(indexPath);
     });
 
-    //* Start Server
+    //* Iniciar servidor
     this.serverListener = this.app.listen(this.port, () => {
       console.log(`Servidor corriendo en el puerto: ${this.port}`);
     });
