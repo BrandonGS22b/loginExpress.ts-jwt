@@ -114,7 +114,9 @@ uploadUserImage = (req: Request, res: Response) => {
     if (err) {
       return res.status(400).json({ error: err.message });
     }
-
+    console.log('hola mensaje');
+    console.log('req.file:', req.file);
+    console.log('req.body:', req.body);
     // Obtener el ID del usuario y la ruta de la imagen subida
     const userId = req.params.id;
     const imageUrl = req.file?.path;

@@ -7,7 +7,7 @@ import ImageModel  from '../../../mongo/models/image.model'; // Importa tu model
 // Configuración de multer para almacenar imágenes
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/images/'); // Carpeta donde se guardarán las imágenes
+    cb(null, '../../../../uploads'); // Carpeta donde se guardarán las imágenes
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`); // Nombre único basado en la fecha

@@ -1,6 +1,6 @@
 import path from 'path';
 import express, { Router } from 'express';
-import fileUpload from 'express-fileupload';
+
 import cors from 'cors'; // Importa CORS
 
 interface Options {
@@ -32,14 +32,14 @@ export class Server {
     // Configuración para parsear JSON y formularios
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
-    
+    /*
     // Configuración para subir archivos
     this.app.use(
       fileUpload({
         limits: { fileSize: 50 * 1024 * 1024 }, // Limite de 50 MB
       })
     );
-
+*/
     //* Carpeta pública
     this.app.use(express.static(this.publicPath));
 

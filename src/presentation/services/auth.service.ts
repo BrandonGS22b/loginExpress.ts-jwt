@@ -116,14 +116,40 @@ export class AuthService {
   //peticion al modelo para guardar la imagen
 
   public async updateUserImage(userId: string, imageUrl: string) {
-    const user = await UserModel.findById(userId);
-    if (!user) throw new Error('User not found');
+    try {
+      const user = await UserModel.findById(userId);
   
-    // Actualizar la imagen
-    user.img = imageUrl;
-    await user.save();
+      // Verificar si el usuario existe
+      if (!user) {
+        return { error: 'User not found' };
+      }
   
-    return user;
+      // Validar que se haya proporcionado una URL de imagen
+      if (!imageUrl) {
+        return { error: 'Invalid image URL' };
+      }
+  
+      // Actualizar la imagen
+      user.img = imageUrl;
+  
+      // Guardar el usuario actualizado
+      await user.save();
+  
+      // Retornar el usuario actualizado
+      return {
+        message: 'User image updated successfully',
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          img: user.img, // Aquí se devuelve la nueva URL de la imagen
+        },
+      };
+    } catch (error) {
+      // Capturar y manejar cualquier otro error
+      return { error: 'Error updating user image' };
+    }
   }
+  
   
 }

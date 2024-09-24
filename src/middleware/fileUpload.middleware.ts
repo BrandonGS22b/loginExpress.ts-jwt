@@ -4,8 +4,8 @@ import path from 'path';
 // Configuración de almacenamiento para Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Carpeta donde se almacenarán las imágenes
-  },
+    cb(null, 'uploads/'); // Carpeta donde se almacenarán las imágenes que va ser en la raiz si quiero que sea 
+  },                        // en el src seria entonces ../uploads/
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para cada archivo
   },
