@@ -112,4 +112,18 @@ export class AuthService {
     }
   }
 
+
+  //peticion al modelo para guardar la imagen
+
+  public async updateUserImage(userId: string, imageUrl: string) {
+    const user = await UserModel.findById(userId);
+    if (!user) throw new Error('User not found');
+  
+    // Actualizar la imagen
+    user.img = imageUrl;
+    await user.save();
+  
+    return user;
+  }
+  
 }

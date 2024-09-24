@@ -4,6 +4,7 @@ import { RegisterUserDto } from '../../../auth/register-user.dto';
 import { GetUserDto } from '../../../auth/get-user.dto';
 import { AuthService } from '../../services/auth.service';
 import { JwtAdapter } from '../../../config';
+import { upload } from '../../../middleware/fileUpload.middleware';
 
 class AuthController {
 
@@ -101,6 +102,35 @@ getAllUsers = async (req: Request, res: Response) => {
       return res.status(500).json({ error: 'Unknown error occurred' });
     }
   }
+};
+
+
+//cargar imagenes
+
+
+uploadUserImage = (req: Request, res: Response) => {
+  // `upload.single('image')` maneja la subida de una sola imagen en postman 
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    // Obtener el ID del usuario y la ruta de la imagen subida
+    const userId = req.params.id;
+    const imageUrl = req.file?.path;
+
+    if (!imageUrl) {
+      return res.status(400).json({ error: 'No image provided' });
+    }
+
+    try {
+      // Guardar la URL de la imagen en el modelo del usuario
+      const updatedUser = await this.authService.updateUserImage(userId, imageUrl);
+      return res.status(200).json(updatedUser);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error updating user image' });
+    }
+  });
 };
 
 

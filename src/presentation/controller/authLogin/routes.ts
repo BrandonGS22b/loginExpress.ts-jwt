@@ -25,12 +25,14 @@ class Authroutes {
     const controller = new AuthController(authService);
 
     const getUsers = new AuthController(authService);
+
+    const uploadImages = new AuthController(authService);
     
     // Definir las rutas para el login que es controller.ts
     router.post('/login', controller.loginUser );
     router.post('/register', controller.registerUser );
-    router.get('/users', getUsers.getAllUsers ); // Añadir esta ruta al final para que funcione con la validación JWT.
-
+    router.get('/get', getUsers.getAllUsers ); // Añadir esta ruta al final para que funcione con la validación JWT.
+    router.post('/users/:id/upload-image', uploadImages.uploadUserImage);
 
 
     
