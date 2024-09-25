@@ -58,6 +58,9 @@ class AuthController {
 
   }
 
+
+  
+
 // Método para obtener todos los usuarios con validación de token
 getAllUsers = async (req: Request, res: Response) => {
   // Extraer el token del encabezado Authorization
