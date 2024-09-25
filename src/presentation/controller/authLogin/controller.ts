@@ -19,7 +19,49 @@ class AuthController {
     return res.status(500).json({ error: 'Internal server error' });
   };
 
-
+  loginUser = async (req: Request, res: Response) => {
+    try {
+      // Validar los datos recibidos
+      const [error, loginUserDto] = LoginUserDto.create(req.body);
+      if (error) {
+        return res.status(400).json({ error });
+      }
+  
+      // Autenticar al usuario
+      const { user, token: generatedToken } = await this.authService.loginUser(loginUserDto!);
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      
+      const expiresIn = 60; // 1 hora en segundos
+  
+      // Generar el token JWT usando user._id
+      const token = await JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h'); // Usa 1h para 1 hora
+      if (!token) {
+        return res.status(500).json({ error: 'Failed to generate token' });
+      }
+  
+      // Configurar la cookie HTTP-only con el token (opcional si solo quieres usar el token desde el cliente)
+      res.cookie('token', token, {
+        httpOnly: true, // Protege la cookie para que solo sea accesible desde el servidor
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        maxAge: expiresIn * 1000, // 1 hora
+        sameSite: 'strict' // Prevenir CSRF
+      });
+  
+      // Devolver respuesta exitosa con el token y el tiempo de expiración
+      return res.status(200).json({ 
+        message: 'Login successful', 
+        user, 
+        token, // Aquí incluimos el token en la respuesta JSON
+        expiresIn // Incluimos el tiempo de expiración en la respuesta
+      });
+    } catch (error) {
+      // Manejar errores de manera uniforme
+      return this.handleError(error, res);
+    }
+  };
 
 
   registerUser = (req: Request, res: Response) => {
@@ -35,48 +77,7 @@ class AuthController {
 
 
 
-  loginUser = async (req: Request, res: Response) => {
-    try {
-      // Validar los datos recibidos
-      const [error, loginUserDto] = LoginUserDto.create(req.body);
-      if (error) {
-        return res.status(400).json({ error });
-      }
   
-      // Autenticar al usuario
-      const { user, token: generatedToken } = await this.authService.loginUser(loginUserDto!);
-      if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-  
-      // Definir el tiempo de expiración del token
-      const expiresIn = 60; // 1 hora en segundos
-  
-      // Generar el token JWT usando user._id
-      const token = await JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h'); // Usa 1h para 1 hora
-      if (!token) {
-        return res.status(500).json({ error: 'Failed to generate token' });
-      }
-  
-      // Configurar la cookie HTTP-only con el token
-      res.cookie('token', token, {
-        httpOnly: true, // Protege la cookie para que solo sea accesible desde el servidor
-        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
-        maxAge: expiresIn * 1000, // 1 hora
-        sameSite: 'strict' // Prevenir CSRF
-      });
-  
-      // Devolver respuesta exitosa con el tiempo de expiración
-      return res.status(200).json({ 
-        message: 'Login successful', 
-        user, 
-        expiresIn // Incluimos el tiempo de expiración en la respuesta
-      });
-    } catch (error) {
-      // Manejar errores de manera uniforme
-      return this.handleError(error, res);
-    }
-  };
 
 
 //validar email si acepta la solicitud 
