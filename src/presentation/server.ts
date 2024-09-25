@@ -2,6 +2,7 @@ import path from 'path';
 import express, { Router } from 'express';
 
 import cors from 'cors'; // Importa CORS
+import cookieParser from 'cookie-parser';
 
 interface Options {
   port: number;
@@ -28,6 +29,8 @@ export class Server {
 
     // Configurar CORS antes de definir rutas
     this.app.use(cors());
+
+    this.app.use(cookieParser());
 
     // Configuración para parsear JSON y formularios
     this.app.use(express.json()); // raw

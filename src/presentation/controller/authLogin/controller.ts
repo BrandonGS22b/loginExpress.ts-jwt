@@ -35,20 +35,44 @@ class AuthController {
 
 
 
-  loginUser = (req: Request, res: Response) => {
+  loginUser = async (req: Request, res: Response) => {
+    try {
+      // Validar los datos recibidos
+      const [error, loginUserDto] = LoginUserDto.create(req.body);
+      if (error) {
+        return res.status(400).json({ error });
+      }
+  
+      // Autenticar al usuario
+      const { user, token: generatedToken } = await this.authService.loginUser(loginUserDto!);
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      // Generar el token JWT usando user._id
+      const token = await JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h'); // Usa user._id aquí
+      if (!token) {
+        return res.status(500).json({ error: 'Failed to generate token' });
+      }
+  
+      // Configurar la cookie HTTP-only con el token
+      res.cookie('token', token, {
+        httpOnly: true, // Protege la cookie para que solo sea accesible desde el servidor
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        maxAge: 3600000, // 1 hora
+        sameSite: 'strict' // Prevenir CSRF
+      });
+  
+      // Devolver respuesta exitosa
+      return res.status(200).json({ message: 'Login successful', user, token }); // Incluye el usuario y el token en la respuesta
+    } catch (error) {
+      // Manejar errores de manera uniforme
+      return this.handleError(error, res);
+    }
+  };
 
-    const [error, loginUserDto] = LoginUserDto.create(req.body);
-    if ( error ) return res.status(400).json({error})
 
-
-    this.authService.loginUser(loginUserDto!)
-      .then( (user) => res.json(user) )
-      .catch( error => this.handleError(error, res) );
-      
-  }
-
-
-
+//validar email si acepta la solicitud 
   validateEmail = (req: Request, res: Response) => {
     const { token } = req.params;
     
@@ -57,6 +81,24 @@ class AuthController {
       .catch( error => this.handleError(error, res) );
 
   }
+  //metodo para verificar el token 
+
+  verifyToken = async (req: Request, res: Response) => {
+  const token = req.cookies.token; // Obtener el token de la cookie
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token is missing' });
+  }
+
+  const payload = await JwtAdapter.validateToken<{ id: string; role: string }>(token); // Aquí debes validar el token
+
+  if (!payload) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+
+  return res.status(200).json({ message: 'Token is valid', userId: payload.id });
+};
+
 
 
   
@@ -140,5 +182,10 @@ uploadUserImage = (req: Request, res: Response) => {
 
 
 
+///metodo para cerrar session 
+logout = (req: Request, res: Response) => {
+  res.clearCookie('token'); // Borra la cookie del token
+  return res.status(200).json({ message: 'Logout successful' });
+};
 }
 export default AuthController;

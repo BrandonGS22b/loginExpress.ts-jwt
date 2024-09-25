@@ -23,6 +23,8 @@ class AuthRoutes {
     router.post('/users/:id/upload-image', controller.uploadUserImage); 
     router.get('/validate-email/:token', controller.validateEmail);
 
+    router.get('/verify', controller.verifyToken);
+    router.post('/logout', controller.logout);
     return router;
   }
 }
