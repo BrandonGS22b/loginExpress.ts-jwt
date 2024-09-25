@@ -28,7 +28,11 @@ export class Server {
     //* Middlewares
 
     // Configurar CORS antes de definir rutas
-    this.app.use(cors());
+    this.app.use(cors({
+      origin: ['http://localhost:3000', 'http://192.168.1.5:3000'],
+      credentials: true, // Habilitar si estás usando cookies o credenciales
+    }));
+    
 
     this.app.use(cookieParser());
 
