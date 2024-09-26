@@ -55,7 +55,8 @@ class AuthController {
         message: 'Login successful', 
         user, 
         token, // Aquí incluimos el token en la respuesta JSON
-        expiresIn // Incluimos el tiempo de expiración en la respuesta
+        expiresIn, // Incluimos el tiempo de expiración en la respuesta
+      
       });
     } catch (error) {
       // Manejar errores de manera uniforme
