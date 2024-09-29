@@ -13,38 +13,47 @@ export class AuthService {
   ) {}
 
   public async registerUser(registerUserDto: RegisterUserDto) {
+    // Verificar si el usuario ya existe por email
     const existUser = await UserModel.findOne({ email: registerUserDto.email });
     if (existUser) throw new Error('Email already exists');
-  
+    
     try {
+      // Crear nuevo usuario con los datos proporcionados
       const user = new UserModel(registerUserDto);
       
       // Encriptar la contraseña
-      user.password = bcryptAdapter.hash(registerUserDto.password);
+      user.password = await bcryptAdapter.hash(registerUserDto.password); // Usar 'await' para esperar la encriptación
       
+      // Guardar el usuario en la base de datos
       await user.save();
   
-      // Email de confirmación
+      // Enviar enlace de confirmación de email
       await this.sendEmailValidationLink(user.email);
   
-      const { password, ...userEntity } = user.toObject(); // No usar UserEntity
+      // Excluir el campo de contraseña de la respuesta
+      const { password, ...userEntity } = user.toObject();
   
+      // Generar token JWT
       const token = await JwtAdapter.generateToken({ id: user.id });
       if (!token) throw new Error('Error while creating JWT');
   
+      // Devolver el usuario sin contraseña y el token generado
       return { 
         user: userEntity, 
         token: token,
       };
   
     } catch (error) {
+      // Manejar cualquier error que ocurra durante el proceso
       if (error instanceof Error) {
+        console.error(`Error: ${error.message}`); // Loguear el error para depuración
         throw new Error(`Internal server error: ${error.message}`);
       } else {
         throw new Error('An unknown error occurred');
       }
     }
   }
+  
 
   public async loginUser(loginUserDto: LoginUserDto) {
     const user = await UserModel.findOne({ email: loginUserDto.email });
