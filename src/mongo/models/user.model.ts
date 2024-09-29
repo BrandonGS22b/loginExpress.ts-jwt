@@ -22,12 +22,14 @@ const userSchema = new mongoose.Schema( {
   },
   img: {
     type: String,
-    required: [ false, 'Image is required']
+    required: false
   },
   role: {
     type: String,
-    required: [ true, 'Rol is required= usuario-admin-tecnico' ]
-  }
+    required: [true, 'Role is required= usuario-admin-tecnico'],
+    enum: ['usuario', 'admin', 'tecnico'],
+    message: 'Role must be either usuario, admin, or tecnico',
+  },
 
 } );
 
