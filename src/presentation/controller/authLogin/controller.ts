@@ -33,10 +33,9 @@ class AuthController {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
   
-      
       const expiresIn = 60; // 1 hora en segundos
   
-      // Generar el token JWT usando user._id
+      // Generar el token JWT usando user._id y el rol
       const token = await JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h'); // Usa 1h para 1 hora
       if (!token) {
         return res.status(500).json({ error: 'Failed to generate token' });
@@ -50,13 +49,18 @@ class AuthController {
         sameSite: 'strict' // Prevenir CSRF
       });
   
-      // Devolver respuesta exitosa con el token y el tiempo de expiración
+      // Devolver respuesta exitosa con el token, usuario y tiempo de expiración
       return res.status(200).json({ 
         message: 'Login successful', 
-        user, 
+        user: { 
+          _id: user._id, 
+          name: user.name, 
+          email: user.email, 
+          emailValidated: user.emailValidated, 
+          role: user.role // Asegúrate de que el rol esté aquí
+        },
         token, // Aquí incluimos el token en la respuesta JSON
         expiresIn, // Incluimos el tiempo de expiración en la respuesta
-      
       });
     } catch (error) {
       // Manejar errores de manera uniforme
