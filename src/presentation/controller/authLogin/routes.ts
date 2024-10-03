@@ -20,6 +20,9 @@ class AuthRoutes {
     router.post('/login', controller.loginUser);
     router.post('/register', controller.registerUser);
     router.get('/get', controller.getAllUsers); 
+    router.put('/users/:userId', controller.updateUser);
+    router.delete('/users/:userId', controller.deleteUser);
+    router.get('/users/:userId', controller.getUserById);
     router.post('/users/:id/upload-image', controller.uploadUserImage); 
     router.get('/validate-email/:token', controller.validateEmail);
 

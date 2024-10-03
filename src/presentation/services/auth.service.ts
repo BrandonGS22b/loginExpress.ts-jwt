@@ -123,6 +123,72 @@ export class AuthService {
   }
 
 
+//peticion para  actualizar  usuarios 
+
+public async updateUserById(userId: string, updateData: Partial<RegisterUserDto>) {
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Actualizar solo los campos que se proporcionan en `updateData`
+    Object.assign(user, updateData);
+
+    // Si se proporciona una contraseña, encriptarla antes de guardar
+    if (updateData.password) {
+      user.password = await bcryptAdapter.hash(updateData.password);
+    }
+
+    await user.save();
+
+    const { password, ...updatedUser } = user.toObject();
+
+    return updatedUser;
+  } catch (error) {
+    throw new Error('Error actualizar usaurio');
+  }
+}
+
+
+//eliminar por id 
+public async deleteUserById(userId: string) {
+  try {
+    const user = await UserModel.findByIdAndDelete(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { message: 'User deleted successfully' };
+  } catch (error) {
+    throw new Error('Error al eliminar usuario');
+  }
+}
+
+
+//buscar por id 
+public async getUserById(userId: string) {
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const { password, ...userEntity } = user.toObject(); // Excluir la contraseña
+    return userEntity;
+  } catch (error) {
+    throw new Error('Error al buscar usuario');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
   //peticion al modelo para guardar la imagen
 
   public async updateUserImage(userId: string, imageUrl: string) {

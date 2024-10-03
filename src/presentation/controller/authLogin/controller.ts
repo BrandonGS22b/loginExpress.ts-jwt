@@ -19,6 +19,9 @@ class AuthController {
     return res.status(500).json({ error: 'Internal server error' });
   };
 
+
+
+  //controller para el inicio de session
   loginUser = async (req: Request, res: Response) => {
     try {
       // Validar los datos recibidos
@@ -69,6 +72,8 @@ class AuthController {
   };
 
 
+
+  //controller para el registro de usuario
   registerUser = (req: Request, res: Response) => {
     const [error, registerDto] = RegisterUserDto.create(req.body);
     if ( error ) return res.status(400).json({error})
@@ -80,8 +85,45 @@ class AuthController {
       
   }
 
+  //controller para la actualizacion de usarios
+  updateUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const updateData = req.body; // Datos de la actualización
+  
+    try {
+      const updatedUser = await this.authService.updateUserById(userId, updateData);
+      return res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+      return this.handleError(error, res);
+    }
+  };
+  
 
+  //controller para eliminar usuario
+  deleteUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+  
+    try {
+      const result = await this.authService.deleteUserById(userId);
+      return res.status(200).json(result);
+    } catch (error) {
+      return this.handleError(error, res);
+    }
+  };
 
+  //controller para obtener usuario por id
+
+  getUserById = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+  
+    try {
+      const user = await this.authService.getUserById(userId);
+      return res.status(200).json(user);
+    } catch (error) {
+      return this.handleError(error, res);
+    }
+  };
+  
   
 
 
