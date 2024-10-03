@@ -13,11 +13,12 @@ class AuthController {
     public readonly authService: AuthService,
   ) {}
 
-  private handleError = (error: unknown, res: Response) => {
+  private handleError = (error: unknown, res: Response): Response => {
     // Manejo genérico de errores
     console.error(error); // Log del error en el servidor
     return res.status(500).json({ error: 'Internal server error' });
   };
+
 
 
 
