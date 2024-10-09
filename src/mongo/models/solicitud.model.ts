@@ -5,6 +5,7 @@ export interface ISolicitud extends Document {
   categoria_id: mongoose.Types.ObjectId;
   descripcion: string;
   imagen?: string;
+  telefono?: string;
   departamento: string;
   ciudad: string;
   barrio: string;
@@ -20,7 +21,7 @@ const SolicitudSchema: Schema = new Schema({
   categoria_id: { type: Schema.Types.ObjectId, ref: 'CategoriaProblema', required: true },
   descripcion: { type: String, required: true },
   imagen: { type: String, required: false },  // Imagen opcional
-  telefono:{ type: String, required: false},
+  telefono:{ type: String, required: true},
   departamento: { type: String, required: true }, // Campo requerido
   ciudad: { type: String, required: true },     // Campo requerido
   barrio: { type: String, required: true },     // Campo requerido
