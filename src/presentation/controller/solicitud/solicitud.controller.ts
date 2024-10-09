@@ -5,7 +5,7 @@ import Solicitud, { ISolicitud } from '../../../mongo/models/solicitud.model';
 // Crear una nueva solicitud
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { usuario_id, categoria_id, descripcion, imagen, departamento, ciudad, barrio, direccion, estado } = req.body;
+    const { usuario_id, categoria_id, descripcion, imagen, departamento, ciudad,telefono, barrio, direccion, estado } = req.body;
 
     // Validar campos requeridos
     if (!usuario_id || !categoria_id || !descripcion || !departamento || !ciudad || !barrio || !direccion || !estado) {
@@ -20,6 +20,7 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       imagen,        // Opcional
       departamento,
       ciudad,
+      telefono,
       barrio,
       direccion,
       estado
