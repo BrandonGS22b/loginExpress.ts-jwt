@@ -20,6 +20,7 @@ const SolicitudSchema: Schema = new Schema({
   categoria_id: { type: Schema.Types.ObjectId, ref: 'CategoriaProblema', required: true },
   descripcion: { type: String, required: true },
   imagen: { type: String, required: false },  // Imagen opcional
+  telefono:{ type: String, required: false},
   departamento: { type: String, required: true }, // Campo requerido
   ciudad: { type: String, required: true },     // Campo requerido
   barrio: { type: String, required: true },     // Campo requerido
