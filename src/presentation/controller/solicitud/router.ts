@@ -14,15 +14,15 @@ const router: Router = Router();
 router.post('/create', crearSolicitud);
 
 // Ruta para obtener todas las solicitudes
-router.get('/', obtenerSolicitudes);
+router.get('/get', obtenerSolicitudes);
 
 // Ruta para obtener una solicitud por ID
-router.get('/:id', obtenerSolicitudPorId);
+router.get('/solicitud/:id', obtenerSolicitudPorId);
 
 // Ruta para actualizar una solicitud por ID
-router.put('/:id', actualizarSolicitud);
+router.put('/solicitud/:id', actualizarSolicitud);
 
 // Ruta para eliminar una solicitud por ID
-router.delete('/:id', eliminarSolicitud);
+router.delete('/solicitud/:id', eliminarSolicitud);
 
 export default router;
