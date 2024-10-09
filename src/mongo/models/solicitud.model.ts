@@ -11,6 +11,8 @@ export interface ISolicitud extends Document {
   longitud: number;
   estado: 'Revisado' | 'En proceso' | 'Solucionado';
   fecha_creacion: Date;
+  createAt: Date;  // Nuevo campo
+  updateAt: Date;  // Nuevo campo
 }
 
 const SolicitudSchema: Schema = new Schema({
@@ -19,10 +21,16 @@ const SolicitudSchema: Schema = new Schema({
   descripcion: { type: String, required: true },
   imagen: { type: String },
   lugar: { type: String },
-  latitud: { type: Number },
-  longitud: { type: Number },
   estado: { type: String, required: true },
   fecha_creacion: { type: Date, default: Date.now },
+  createAt: { type: Date, default: Date.now },  // Nuevo campo
+  updateAt: { type: Date, default: Date.now }   // Nuevo campo
+});
+
+// Middleware para actualizar el campo updateAt
+SolicitudSchema.pre('save', function(next) {
+  this.updateAt = new Date();  // Actualiza la fecha de modificación
+  next();
 });
 
 export default mongoose.model<ISolicitud>('Solicitud', SolicitudSchema);
