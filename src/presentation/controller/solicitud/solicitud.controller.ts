@@ -1,14 +1,13 @@
-// src/controllers/solicitud.controller.ts
 import { Request, Response } from 'express';
 import Solicitud, { ISolicitud } from '../../../mongo/models/solicitud.model';
 
 // Crear una nueva solicitud
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { usuario_id, categoria_id, descripcion, imagen, departamento, ciudad,telefono, barrio, direccion, estado } = req.body;
+    const { usuario_id, categoria_id, descripcion, imagen, departamento, ciudad, telefono, barrio, direccion, estado } = req.body;
 
     // Validar campos requeridos
-    if (!usuario_id || !categoria_id || !descripcion || !departamento || !ciudad || !barrio || !direccion || !estado) {
+    if (!usuario_id || !categoria_id || !descripcion || !departamento || !ciudad || !barrio || !direccion || !estado || !telefono) {
       res.status(400).json({ message: 'Todos los campos requeridos deben ser proporcionados' });
       return;
     }
@@ -18,18 +17,18 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       categoria_id,
       descripcion,
       imagen,        // Opcional
+      telefono,
       departamento,
       ciudad,
-      telefono,
       barrio,
       direccion,
       estado
     });
 
-    await solicitud.save();
-    res.status(201).json(solicitud);
+    const solicitudGuardada = await solicitud.save();
+    res.status(201).json(solicitudGuardada);
   } catch (error) {
-    console.error('Error al crear la solicitud:', error);
+    console.error('Error al crear la solicitud:');
     res.status(500).json({ message: 'Error al crear la solicitud' });
   }
 };
