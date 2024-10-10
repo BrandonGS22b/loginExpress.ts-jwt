@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import Solicitud, { ISolicitud } from '../../../mongo/models/solicitud.model';
+import Solicitud from '../../../mongo/models/solicitud.model';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import mongoose from 'mongoose';
 
 // Configuración de multer para manejar la subida de archivos
 const storage = multer.diskStorage({
@@ -37,9 +38,6 @@ const upload = multer({ storage, fileFilter }); // Agrega el fileFilter aquí
 // Crear una nueva solicitud con imagen
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('Body:', req.body);
-    console.log('File:', req.file);
-
     const { usuario_id, categoria, descripcion, telefono, departamento, ciudad, barrio, direccion, estado } = req.body;
 
     // Validar campos requeridos
@@ -57,7 +55,7 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
 
     const solicitud = new Solicitud({
       usuario_id,
-      categoria, // Usamos el campo 'categoria' en lugar de 'categoria_id'
+      categoria,
       descripcion,
       imagen: imagenNombre, // Guardamos solo el nombre del archivo
       telefono,
@@ -66,7 +64,7 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       barrio,
       direccion,
       estado,
-      fecha_creacion: new Date(), // Asignamos la fecha de creación
+      fecha_creacion: new Date(),
     });
 
     const solicitudGuardada = await solicitud.save();
@@ -92,6 +90,13 @@ export const obtenerSolicitudes = async (req: Request, res: Response): Promise<v
 export const obtenerSolicitudPorId = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
+    // Verificar si el ID es un ObjectId válido
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400).json({ message: 'ID de solicitud no válido' });
+      return;
+    }
+
     const solicitud = await Solicitud.findById(id);
     if (!solicitud) {
       res.status(404).json({ message: 'Solicitud no encontrada' });
@@ -110,6 +115,12 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
     const { id } = req.params;
     const updatedData = req.body;
 
+    // Verificar si el ID es un ObjectId válido
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400).json({ message: 'ID de solicitud no válido' });
+      return;
+    }
+
     // Verificar si se subió una nueva imagen
     if (req.file) {
       updatedData.imagen = req.file.filename; // Guardar solo el nombre del archivo
@@ -126,7 +137,11 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
       }
     }
 
-    const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, { new: true });
+    const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!solicitudActualizada) {
       res.status(404).json({ message: 'Solicitud no encontrada' });
       return;
@@ -142,6 +157,13 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
 export const eliminarSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
+    // Verificar si el ID es un ObjectId válido
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400).json({ message: 'ID de solicitud no válido' });
+      return;
+    }
+
     const solicitud = await Solicitud.findByIdAndDelete(id);
     if (!solicitud) {
       res.status(404).json({ message: 'Solicitud no encontrada' });
