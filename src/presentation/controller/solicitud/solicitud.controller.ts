@@ -19,16 +19,19 @@ const upload = multer({ storage });
 // Crear una nueva solicitud con imagen
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { usuario_id, categoria_id, descripcion, departamento, ciudad, telefono, barrio, direccion, estado } = req.body;
+    console.log('Body:', req.body);
+    console.log('File:', req.file);
+
+    const { usuario_id, categoria, descripcion, telefono, departamento, ciudad, barrio, direccion, estado } = req.body;
 
     // Validar campos requeridos
-    if (!usuario_id || !categoria_id || !descripcion || !departamento || !ciudad || !barrio || !direccion || !estado || !telefono) {
+    if (!usuario_id || !categoria || !descripcion || !departamento || !ciudad || !barrio || !direccion || !estado || !telefono) {
       res.status(400).json({ message: 'Todos los campos requeridos deben ser proporcionados' });
       return;
     }
 
     let imagenPath: string | undefined;
-    
+
     // Verificar si se subió una imagen
     if (req.file) {
       imagenPath = req.file.path; // Guardamos la ruta de la imagen
@@ -36,7 +39,7 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
 
     const solicitud = new Solicitud({
       usuario_id,
-      categoria_id,
+      categoria, // Usamos el campo 'categoria' en lugar de 'categoria_id'
       descripcion,
       imagen: imagenPath, // Guardamos la ruta o el nombre del archivo
       telefono,
@@ -44,7 +47,8 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       ciudad,
       barrio,
       direccion,
-      estado
+      estado,
+      fecha_creacion: new Date(), // Asignamos la fecha de creación
     });
 
     const solicitudGuardada = await solicitud.save();
