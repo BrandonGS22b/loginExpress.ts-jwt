@@ -1,6 +1,5 @@
 import path from 'path';
 import express, { Router } from 'express';
-
 import cors from 'cors'; // Importa CORS
 import cookieParser from 'cookie-parser';
 
@@ -41,7 +40,7 @@ export class Server {
 
     //* Carpeta pública para archivos estáticos
     this.app.use(express.static(path.join(__dirname, `../../../${this.publicPath}`))); // Servir archivos de la carpeta 'public'
-    this.app.use(express.static(path.join(__dirname, '../../uploads'))); // Servir archivos de la carpeta 'uploads'
+    this.app.use(express.static(path.join(__dirname, '../../..', 'uploads'))); // Servir archivos de la carpeta 'uploads'
 
     //* Definir rutas
     this.app.use(this.routes);
