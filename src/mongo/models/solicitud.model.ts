@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISolicitud extends Document {
   usuario_id: mongoose.Types.ObjectId;
-  categoria: string; // Ahora la categoría es un string con valores predefinidos
+  categoria: string; 
   descripcion: string;
   imagen?: string;
   telefono?: string;
@@ -21,10 +21,9 @@ const SolicitudSchema: Schema = new Schema({
   categoria: {
     type: String,
     required: true,
-    //enum: ['Fuga de agua', 'Daño eléctrico', 'Bache en la vía', 'Otro problema'], // Categorías predefinidas
   },
   descripcion: { type: String, required: true },
-  imagen: { type: String, required: false },  // Imagen opcional
+  imagen: { type: String, required: false },
   telefono: { type: String, required: true },
   departamento: { type: String, required: true },
   ciudad: { type: String, required: true },
@@ -36,14 +35,6 @@ const SolicitudSchema: Schema = new Schema({
     enum: ['Revisado', 'En proceso', 'Solucionado'],
   },
   fecha_creacion: { type: Date, default: Date.now },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
-
-// Middleware para actualizar el campo updatedAt antes de guardar
-SolicitudSchema.pre('save', function (next) {
-  this.set('updatedAt', new Date());
-  next();
-});
+}, { timestamps: true }); // Habilita los timestamps automáticos para createdAt y updatedAt
 
 export default mongoose.model<ISolicitud>('Solicitud', SolicitudSchema);
