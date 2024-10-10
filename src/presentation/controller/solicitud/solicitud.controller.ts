@@ -7,10 +7,15 @@ import fs from 'fs';
 // Configuración de multer para manejar la subida de archivos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Carpeta donde se guardarán las imágenes
+    const uploadPath = path.resolve(__dirname, '../../../../uploads/');
+    // Crear la carpeta si no existe
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath); // Carpeta donde se guardarán las imágenes
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    cb(null, `${Date.now()}-${file.originalname}`); // Nombre único basado en la fecha
   }
 });
 
