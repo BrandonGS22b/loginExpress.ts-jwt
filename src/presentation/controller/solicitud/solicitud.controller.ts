@@ -35,18 +35,18 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    let imagenPath: string | undefined;
+    let imagenNombre: string | undefined;
 
     // Verificar si se subió una imagen
     if (req.file) {
-      imagenPath = req.file.path; // Guardamos la ruta de la imagen
+      imagenNombre = req.file.filename; // Guardamos solo el nombre del archivo
     }
 
     const solicitud = new Solicitud({
       usuario_id,
       categoria, // Usamos el campo 'categoria' en lugar de 'categoria_id'
       descripcion,
-      imagen: imagenPath, // Guardamos la ruta o el nombre del archivo
+      imagen: imagenNombre, // Guardamos solo el nombre del archivo
       telefono,
       departamento,
       ciudad,
@@ -99,12 +99,13 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
 
     // Verificar si se subió una nueva imagen
     if (req.file) {
-      updatedData.imagen = req.file.path; // Guardar la nueva imagen
+      updatedData.imagen = req.file.filename; // Guardar solo el nombre del archivo
 
       // Eliminar la imagen anterior si existía
       const solicitud = await Solicitud.findById(id);
       if (solicitud?.imagen) {
-        fs.unlink(path.resolve(solicitud.imagen), (err) => {
+        const imagenPath = path.resolve(__dirname, '../../../../uploads/', solicitud.imagen);
+        fs.unlink(imagenPath, (err) => {
           if (err) {
             console.error('Error al eliminar la imagen anterior:', err);
           }
@@ -136,7 +137,8 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
 
     // Eliminar la imagen asociada si existe
     if (solicitud.imagen) {
-      fs.unlink(path.resolve(solicitud.imagen), (err) => {
+      const imagenPath = path.resolve(__dirname, '../../../../uploads/', solicitud.imagen);
+      fs.unlink(imagenPath, (err) => {
         if (err) {
           console.error('Error al eliminar la imagen:', err);
         }
