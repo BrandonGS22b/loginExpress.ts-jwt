@@ -13,6 +13,7 @@ import solicitud from './presentation/controller/solicitud/router';
 
 
 
+
 export class AppRoutes {
   static get routes(): Router {
     const router = Router();

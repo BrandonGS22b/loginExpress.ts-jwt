@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISolicitud extends Document {
   usuario_id: mongoose.Types.ObjectId;
-  categoria_id: mongoose.Types.ObjectId;
+  categoria: string; // Ahora la categoría es un string con valores predefinidos
   descripcion: string;
   imagen?: string;
   telefono?: string;
@@ -18,14 +18,18 @@ export interface ISolicitud extends Document {
 
 const SolicitudSchema: Schema = new Schema({
   usuario_id: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
-  categoria_id: { type: Schema.Types.ObjectId, ref: 'CategoriaProblema', required: true },
+  categoria: {
+    type: String,
+    required: true,
+    //enum: ['Fuga de agua', 'Daño eléctrico', 'Bache en la vía', 'Otro problema'], // Categorías predefinidas
+  },
   descripcion: { type: String, required: true },
   imagen: { type: String, required: false },  // Imagen opcional
-  telefono:{ type: String, required: true},
-  departamento: { type: String, required: true }, // Campo requerido
-  ciudad: { type: String, required: true },     // Campo requerido
-  barrio: { type: String, required: true },     // Campo requerido
-  direccion: { type: String, required: true },  // Campo requerido
+  telefono: { type: String, required: true },
+  departamento: { type: String, required: true },
+  ciudad: { type: String, required: true },
+  barrio: { type: String, required: true },
+  direccion: { type: String, required: true },
   estado: {
     type: String,
     required: true,
