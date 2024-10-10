@@ -19,7 +19,20 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+// Filtro para validar el tipo de archivo
+const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  const filetypes = /jpeg|jpg|png/; // Extensiones permitidas
+  const mimetype = filetypes.test(file.mimetype); // Verifica el tipo MIME
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // Verifica la extensión
+
+  if (mimetype && extname) {
+    return cb(null, true); // Acepta el archivo
+  } else {
+    cb(new Error('Solo se permiten archivos de imagen .png, .jpg, .jpeg')); // Rechaza el archivo
+  }
+};
+
+const upload = multer({ storage, fileFilter }); // Agrega el fileFilter aquí
 
 // Crear una nueva solicitud con imagen
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
