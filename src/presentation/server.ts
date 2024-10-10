@@ -32,30 +32,23 @@ export class Server {
       origin: ['http://localhost:3000', 'http://192.168.1.5:3000'],
       credentials: true, // Habilitar si estás usando cookies o credenciales
     }));
-    
 
     this.app.use(cookieParser());
 
     // Configuración para parsear JSON y formularios
     this.app.use(express.json()); // raw
     this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
-    /*
-    // Configuración para subir archivos
-    this.app.use(
-      fileUpload({
-        limits: { fileSize: 50 * 1024 * 1024 }, // Limite de 50 MB
-      })
-    );
-*/
-    //* Carpeta pública
-    this.app.use(express.static(this.publicPath));
+
+    //* Carpeta pública para archivos estáticos
+    this.app.use(express.static(path.join(__dirname, `../../../${this.publicPath}`))); // Servir archivos de la carpeta 'public'
+    this.app.use(express.static(path.join(__dirname, '../../uploads'))); // Servir archivos de la carpeta 'uploads'
 
     //* Definir rutas
     this.app.use(this.routes);
 
     //* SPA
     this.app.get('*', (req, res) => {
-      const indexPath = path.join(__dirname + `../../../${this.publicPath}/index.html`);
+      const indexPath = path.join(__dirname, `../../../${this.publicPath}/index.html`);
       res.sendFile(indexPath);
     });
 
