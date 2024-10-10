@@ -24,5 +24,5 @@ router.put('/update/:id', upload.single('imagen'), actualizarSolicitud);
 
 // Ruta para eliminar una solicitud por ID
 router.delete('/delete/:id', eliminarSolicitud);
-
+//exportacion a otros componentes
 export default router;
