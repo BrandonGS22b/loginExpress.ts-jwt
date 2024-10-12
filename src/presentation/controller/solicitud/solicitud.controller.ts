@@ -173,9 +173,19 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
     // Eliminar la imagen asociada si existe
     if (solicitud.imagen) {
       const imagenPath = path.resolve(__dirname, '../../../../uploads/', solicitud.imagen);
-      fs.unlink(imagenPath, (err) => {
+      
+      // Verificar si la imagen existe antes de eliminarla
+      fs.access(imagenPath, fs.constants.F_OK, (err) => {
         if (err) {
-          console.error('Error al eliminar la imagen:', err);
+          console.log(`La imagen ${imagenPath} no existe, no se puede eliminar.`);
+        } else {
+          fs.unlink(imagenPath, (unlinkErr) => {
+            if (unlinkErr) {
+              console.error('Error al eliminar la imagen:', unlinkErr);
+            } else {
+              console.log('Imagen eliminada exitosamente:', imagenPath);
+            }
+          });
         }
       });
     }
@@ -186,6 +196,7 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
     res.status(500).json({ message: 'Error al eliminar la solicitud' });
   }
 };
+
 
 // Exportamos el middleware de multer para usarlo en las rutas
 export { upload };
