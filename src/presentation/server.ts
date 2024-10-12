@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { Server as HttpServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
+import multer from 'multer';
 
 interface Options {
   port: number;
@@ -47,6 +48,31 @@ export class Server {
         }
       });
     });
+
+
+
+
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../../uploads')); // Carpeta de destino
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname); // Nombre único
+      }
+    });
+    
+    const upload = multer({ storage });
+    
+    // Ruta para subir archivos
+    this.app.post('/upload', upload.single('image'), (req, res) => {
+      if (!req.file) {
+        return res.status(400).send('No se subió ningún archivo');
+      }
+      res.status(200).send({ filename: req.file.filename });
+    });
+
+
 
     // Crear el servidor HTTP
     const httpServer = new HttpServer(this.app);
