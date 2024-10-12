@@ -18,7 +18,7 @@ export class RegisterUserDto {
     if (!regularExps.email.test(email)) return ['Email is not valid'];
 
     if (!password) return ['Missing password'];
-    if (password.length < 6) return ['Password too short'];
+    if (password.length < 4) return ['Password too short'];
 
     if (!role) return ['Missing role']; // Validar que el rol esté presente
     if (!['usuario', 'admin', 'tecnico'].includes(role)) return ['Role must be one of: usuario, admin, tecnico']; // Validar que el rol sea uno de los permitidos
