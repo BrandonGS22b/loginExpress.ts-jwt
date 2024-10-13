@@ -1,10 +1,14 @@
 import admin from 'firebase-admin';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Carga las variables de entorno desde el archivo .env
+dotenv.config();
 
 // Carga tu archivo de claves
 let serviceAccount;
 try {
-  serviceAccount = require(path.resolve(__dirname, '../../config/serviceAccountKey.json'));
+    serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY as string);
 } catch (error) {
   console.error('Error al cargar el archivo de claves de Firebase:', error);
   throw new Error('No se pudo cargar el archivo de claves de Firebase');
