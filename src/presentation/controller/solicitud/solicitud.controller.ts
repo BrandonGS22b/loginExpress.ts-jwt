@@ -1,39 +1,14 @@
 import { Request, Response } from 'express';
 import Solicitud from '../../../mongo/models/solicitud.model';
 import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
 import mongoose from 'mongoose';
+import { getStorage } from 'firebase-admin/storage';
+import { v4 as uuidv4 } from 'uuid'; // Para generar nombres únicos
+import bucket from '../../../mongo/firebase/firebase'; // Asegúrate de que la ruta sea correcta
 
 // Configuración de multer para manejar la subida de archivos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.resolve(__dirname, '../../../../uploads/');
-    // Crear la carpeta si no existe
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath); // Carpeta donde se guardarán las imágenes
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Nombre único basado en la fecha
-  }
-});
-
-// Filtro para validar el tipo de archivo
-const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const filetypes = /jpeg|jpg|png/; // Extensiones permitidas
-  const mimetype = filetypes.test(file.mimetype); // Verifica el tipo MIME
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); // Verifica la extensión
-
-  if (mimetype && extname) {
-    return cb(null, true); // Acepta el archivo
-  } else {
-    cb(new Error('Solo se permiten archivos de imagen .png, .jpg, .jpeg')); // Rechaza el archivo
-  }
-};
-
-const upload = multer({ storage, fileFilter }); // Agrega el fileFilter aquí
+const storage = multer.memoryStorage(); // Usamos memoria temporal para Firebase
+const upload = multer({ storage });
 
 // Crear una nueva solicitud con imagen
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
@@ -46,29 +21,64 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    let imagenNombre: string | undefined;
+    let imagenURL: string | undefined;
 
     // Verificar si se subió una imagen
     if (req.file) {
-      imagenNombre = req.file.filename; // Guardamos solo el nombre del archivo
+      const blob = bucket.file(`${uuidv4()}-${req.file.originalname}`); // Crear un archivo único en Firebase
+      const blobStream = blob.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
+
+      blobStream.on('error', (error) => {
+        console.error('Error al subir la imagen a Firebase:', error);
+        res.status(500).json({ message: 'Error al subir la imagen' });
+        return;
+      });
+
+      blobStream.on('finish', async () => {
+        imagenURL = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
+
+        const solicitud = new Solicitud({
+          usuario_id,
+          categoria,
+          descripcion,
+          imagen: imagenURL, // Guardamos la URL de la imagen
+          telefono,
+          departamento,
+          ciudad,
+          barrio,
+          direccion,
+          estado,
+          fecha_creacion: new Date(),
+        });
+
+        const solicitudGuardada = await solicitud.save();
+        res.status(201).json(solicitudGuardada);
+      });
+
+      blobStream.end(req.file.buffer); // Finalizamos la subida de la imagen
+    } else {
+      // Si no hay imagen, simplemente guarda la solicitud sin imagen
+      const solicitud = new Solicitud({
+        usuario_id,
+        categoria,
+        descripcion,
+        imagen: imagenURL, // Puede ser undefined si no hay imagen
+        telefono,
+        departamento,
+        ciudad,
+        barrio,
+        direccion,
+        estado,
+        fecha_creacion: new Date(),
+      });
+
+      const solicitudGuardada = await solicitud.save();
+      res.status(201).json(solicitudGuardada);
     }
-
-    const solicitud = new Solicitud({
-      usuario_id,
-      categoria,
-      descripcion,
-      imagen: imagenNombre, // Guardamos solo el nombre del archivo
-      telefono,
-      departamento,
-      ciudad,
-      barrio,
-      direccion,
-      estado,
-      fecha_creacion: new Date(),
-    });
-
-    const solicitudGuardada = await solicitud.save();
-    res.status(201).json(solicitudGuardada);
   } catch (error) {
     console.error('Error al crear la solicitud:', error);
     res.status(500).json({ message: 'Error al crear la solicitud' });
@@ -123,30 +133,59 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
 
     // Verificar si se subió una nueva imagen
     if (req.file) {
-      updatedData.imagen = req.file.filename; // Guardar solo el nombre del archivo
-
-      // Eliminar la imagen anterior si existía
       const solicitud = await Solicitud.findById(id);
+
       if (solicitud?.imagen) {
-        const imagenPath = path.resolve(__dirname, '../../../../uploads/', solicitud.imagen);
-        fs.unlink(imagenPath, (err) => {
-          if (err) {
-            console.error('Error al eliminar la imagen anterior:', err);
-          }
+        // Eliminar la imagen anterior en Firebase si existe
+        const fileName = decodeURIComponent(solicitud.imagen.split('/').pop()!.split('?')[0]);
+        await bucket.file(fileName).delete().catch((err) => {
+          console.error('Error al eliminar la imagen de Firebase:', err);
         });
       }
-    }
 
-    const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, {
-      new: true,
-      runValidators: true,
-    });
+      const blob = bucket.file(`${uuidv4()}-${req.file.originalname}`);
+      const blobStream = blob.createWriteStream({
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      });
 
-    if (!solicitudActualizada) {
-      res.status(404).json({ message: 'Solicitud no encontrada' });
-      return;
+      blobStream.on('error', (error) => {
+        console.error('Error al subir la imagen a Firebase:', error);
+        res.status(500).json({ message: 'Error al subir la imagen' });
+        return;
+      });
+
+      blobStream.on('finish', async () => {
+        updatedData.imagen = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
+
+        const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, {
+          new: true,
+          runValidators: true,
+        });
+
+        if (!solicitudActualizada) {
+          res.status(404).json({ message: 'Solicitud no encontrada' });
+          return;
+        }
+
+        res.status(200).json(solicitudActualizada);
+      });
+
+      blobStream.end(req.file.buffer);
+    } else {
+      const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!solicitudActualizada) {
+        res.status(404).json({ message: 'Solicitud no encontrada' });
+        return;
+      }
+
+      res.status(200).json(solicitudActualizada);
     }
-    res.status(200).json(solicitudActualizada);
   } catch (error) {
     console.error('Error al actualizar la solicitud:', error);
     res.status(500).json({ message: 'Error al actualizar la solicitud' });
@@ -172,21 +211,9 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
 
     // Eliminar la imagen asociada si existe
     if (solicitud.imagen) {
-      const imagenPath = path.resolve(__dirname, '../../../../uploads/', solicitud.imagen);
-      
-      // Verificar si la imagen existe antes de eliminarla
-      fs.access(imagenPath, fs.constants.F_OK, (err) => {
-        if (err) {
-          console.log(`La imagen ${imagenPath} no existe, no se puede eliminar.`);
-        } else {
-          fs.unlink(imagenPath, (unlinkErr) => {
-            if (unlinkErr) {
-              console.error('Error al eliminar la imagen:', unlinkErr);
-            } else {
-              console.log('Imagen eliminada exitosamente:', imagenPath);
-            }
-          });
-        }
+      const fileName = decodeURIComponent(solicitud.imagen.split('/').pop()!.split('?')[0]);
+      await bucket.file(fileName).delete().catch((err) => {
+        console.error('Error al eliminar la imagen de Firebase:', err);
       });
     }
 
@@ -196,7 +223,6 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
     res.status(500).json({ message: 'Error al eliminar la solicitud' });
   }
 };
-
 
 // Exportamos el middleware de multer para usarlo en las rutas
 export { upload };
