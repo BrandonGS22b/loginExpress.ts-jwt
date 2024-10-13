@@ -1,27 +1,20 @@
-import admin from 'firebase-admin';
-import path from 'path';
-import dotenv from 'dotenv';
+import { initializeApp } from 'firebase/app' 
+import { getStorage } from 'firebase/storage' 
+import dotenv from 'dotenv'
 
-// Carga las variables de entorno desde el archivo .env
-dotenv.config();
+dotenv.config()
 
-// Carga tu archivo de claves
-let serviceAccount;
-try {
-    serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY as string);
-} catch (error) {
-  console.error('Error al cargar el archivo de claves de Firebase:', error);
-  throw new Error('No se pudo cargar el archivo de claves de Firebase');
+
+const firebaseConfig = {
+apikey: process.env.API_KEY,
+authDomain: process.env.AUTH_DOMAIN,
+projectId: process.env.PROJECT_ID,
+storageBucket: process.env.STORAGE_BUCKET,
+messagingSenderId:
+process.env.MESSAGING_SENDER_ID, 
+appId: process.env.APP_ID
 }
 
-// Inicializa la aplicación de Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'proyecto-f7ec6.appspot.com' // Reemplaza con tu bucket de Firebase Storage
-});
+const firebaseApp= initializeApp(firebaseConfig)
 
-// Obtiene la referencia al bucket de almacenamiento
-const bucket = admin.storage().bucket();
-
-// Exporta el bucket para su uso en otros módulos
-export default bucket;
+export const storage = getStorage(firebaseApp)
