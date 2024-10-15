@@ -14,6 +14,6 @@ router.post('/create', crearSolicitud);
 router.get('/get', obtenerSolicitudes);
 
 // Ruta para eliminar un mensaje por ID
-router.put('/:id', actualizarSolicitud);
+router.put('/update/:id', actualizarSolicitud);
 
 export default router;
