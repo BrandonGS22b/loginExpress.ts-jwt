@@ -227,5 +227,42 @@ public async getUserById(userId: string) {
     }
   }
   
+
+
+
+
+  public async getTechnicians() {
+    try {
+      const technicians = await UserModel.find({ role: 'tecnico' }); // Asegúrate de que 'technician' es el rol que has definido para técnicos.
+      return technicians.map(tech => {
+        const { password, ...techEntity } = tech.toObject(); // Excluir la contraseña
+        return techEntity;
+      });
+    } catch (error) {
+      throw new Error('Error fetching technicians');
+    }
+  }
+  
+  public async assignTechnician(userId: string, taskId: string) {
+    try {
+      const user = await UserModel.findById(userId);
+      if (!user || user.role !== 'tecnico') {
+        throw new Error('Technician not found');
+      }
+  
+      // Aquí, lógicamente, asignarías la tarea (taskId) al técnico (userId)
+      // Por ejemplo, actualizando un modelo de tareas o similar.
+  
+      // Suponiendo que hay un modelo de tarea
+      // const task = await TaskModel.findById(taskId);
+      // if (!task) throw new Error('Task not found');
+      // task.assignedTo = userId;
+      // await task.save();
+  
+      return { message: 'Technician assigned successfully' };
+    } catch (error) {
+      throw new Error('Error assigning technician');
+    }
+  }
   
 }

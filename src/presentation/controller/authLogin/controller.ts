@@ -256,5 +256,28 @@ logout = (req: Request, res: Response) => {
   res.clearCookie('token'); // Borra la cookie del token
   return res.status(200).json({ message: 'Logout successful' });
 };
+
+
+getTechnicians = async (req: Request, res: Response) => {
+  try {
+    const technicians = await this.authService.getTechnicians(); // Llama al servicio para obtener técnicos
+    return res.status(200).json(technicians);
+  } catch (error) {
+    return this.handleError(error, res);
+  }
+};
+
+
+// Método para asignar un técnico a una solicitud
+assignTechnician = async (req: Request, res: Response) => {
+  const { requestId, technicianId } = req.body; // Asumiendo que se envían ambos IDs en el cuerpo de la solicitud
+  
+  try {
+    const result = await this.authService.assignTechnician(requestId, technicianId); // Llama al servicio para asignar el técnico
+    return res.status(200).json({ message: 'Technician assigned successfully', result });
+  } catch (error) {
+    return this.handleError(error, res);
+  }
+};
 }
 export default AuthController;

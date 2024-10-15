@@ -26,6 +26,11 @@ class AuthRoutes {
     router.post('/users/:id/upload-image', controller.uploadUserImage); 
     router.get('/validate-email/:token', controller.validateEmail);
 
+
+    router.get('/technicians', controller.getTechnicians); // Para obtener todos los técnicos
+    router.post('/assign-technician', controller.assignTechnician); // Para asignar un técnico a una tarea
+
+
     router.get('/verify', controller.verifyToken);
     router.post('/logout', controller.logout);
     return router;
