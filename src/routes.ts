@@ -7,7 +7,7 @@ import categoriaProblemaRoutes from './presentation/controller/categoriaproblema
 import mantenimientoRoutes from './presentation/controller/mantenimiento/router';
 import historialMantenimientoRoutes from './presentation/controller/historiasmantenimiento/router';
 import asignacionTecnicoRoutes from './presentation/controller/asignacionTecnico/router';
-import mensajeRoutes from './presentation/controller/mesanje/router';
+import GestionMantenimiento from './presentation/controller/GestionMantenimiento/router';
 import evaluacionRoutes from './presentation/controller/evaluacion/router';
 import solicitud from './presentation/controller/solicitud/router';
 
@@ -27,7 +27,7 @@ export class AppRoutes {
     router.use('/api/mantenimiento', mantenimientoRoutes);
     router.use('/api/historialMantenimiento', historialMantenimientoRoutes);
     router.use('/api/asignacionTecnico', asignacionTecnicoRoutes);
-    router.use('/api/mensaje', mensajeRoutes);
+    router.use('/api/GestionMantenimiento', GestionMantenimiento);
     router.use('/api/evaluacion', evaluacionRoutes);
 
   
