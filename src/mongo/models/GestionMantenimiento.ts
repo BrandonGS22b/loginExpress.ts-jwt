@@ -5,6 +5,7 @@ interface IGestionMantenimiento extends Document {
   gastos: number;
   diasDuracion: number;
   comentarios: string;
+  idTecnico: mongoose.Types.ObjectId; // Agregado para almacenar el ID del técnico
 }
 
 const GestionMantenimientoSchema: Schema = new Schema({
@@ -23,6 +24,11 @@ const GestionMantenimientoSchema: Schema = new Schema({
   comentarios: {
     type: String,
     default: '',
+  },
+  idTecnico: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Usuario', // Referencia al modelo de Usuario
+    required: true,
   },
   // Otros campos adicionales de la solicitud
 });
