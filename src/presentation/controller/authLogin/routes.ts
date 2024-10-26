@@ -28,6 +28,7 @@ class AuthRoutes {
 
 
     router.get('/technicians', controller.getTechnicians); // Para obtener todos los técnicos
+    router.get('/technicians/:userId', controller.getTechnicianById); // Obtener técnico por ID
     router.post('/assign-technician', controller.assignTechnician); // Para asignar un técnico a una tarea
 
 

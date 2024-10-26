@@ -242,6 +242,29 @@ public async getUserById(userId: string) {
       throw new Error('Error fetching technicians');
     }
   }
+
+//para obtener por id 
+
+public async getTechnicianById(userId: string) {
+  try {
+    // Busca el técnico por ID y rol 'tecnico'
+    const technician = await UserModel.findOne({ _id: userId, role: 'tecnico' });
+
+    if (!technician) {
+      throw new Error('Technician not found');
+    }
+
+    // Excluir la contraseña antes de devolver el objeto
+    const { password, ...techEntity } = technician.toObject();
+    return techEntity;
+
+  } catch (error) {
+    console.error('Error getting technician:', error);
+    throw new Error('Error getting technician');
+  }
+}
+
+
   
   public async assignTechnician(userId: string, taskId: string) {
     try {

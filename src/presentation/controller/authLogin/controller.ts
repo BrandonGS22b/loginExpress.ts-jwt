@@ -5,6 +5,7 @@ import { GetUserDto } from '../../../auth/get-user.dto';
 import { AuthService } from '../../services/auth.service';
 import { JwtAdapter } from '../../../config';
 import { upload } from '../../../middleware/fileUpload.middleware';
+import { UserModel } from '../../../mongo/models/user.model';
 
 class AuthController {
 
@@ -262,6 +263,26 @@ getTechnicians = async (req: Request, res: Response) => {
   try {
     const technicians = await this.authService.getTechnicians(); // Llama al servicio para obtener técnicos
     return res.status(200).json(technicians);
+  } catch (error) {
+    return this.handleError(error, res);
+  }
+};
+
+
+
+getTechnicianById = async (req: Request, res: Response) => {
+  const { userId } = req.params; // Obtenemos el ID del técnico desde los parámetros de la URL
+
+  try {
+    // Llamamos al servicio para obtener el técnico por ID
+    const technician = await this.authService.getTechnicianById(userId);
+    
+    if (!technician) {
+      return res.status(404).json({ error: 'Technician not found' });
+    }
+
+    // Devolvemos la información del técnico excluyendo la contraseña
+    return res.status(200).json(technician);
   } catch (error) {
     return this.handleError(error, res);
   }
