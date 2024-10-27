@@ -10,6 +10,7 @@ import asignacionTecnicoRoutes from './presentation/controller/asignacionTecnico
 import GestionMantenimiento from './presentation/controller/GestionMantenimiento/router';
 import evaluacionRoutes from './presentation/controller/evaluacion/router';
 import solicitud from './presentation/controller/solicitud/router';
+import GestionTecnicosRoutes from './presentation/controller/gestiontecnico/routes';
 
 
 
@@ -20,7 +21,7 @@ export class AppRoutes {
 
     // Definir las rutas
     router.use('/api/auth', Authroutes.routes);
-
+    router.use('/api/GestionTecnico',GestionTecnicosRoutes );
     // Rutas para cada uno de los modelos
     router.use('/api/solicitud', solicitud);
     router.use('/api/categoriaProblema', categoriaProblemaRoutes);
@@ -29,6 +30,7 @@ export class AppRoutes {
     router.use('/api/asignacionTecnico', asignacionTecnicoRoutes);
     router.use('/api/GestionMantenimiento', GestionMantenimiento);
     router.use('/api/evaluacion', evaluacionRoutes);
+    
 
   
 

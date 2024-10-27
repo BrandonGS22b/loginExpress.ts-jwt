@@ -9,10 +9,6 @@ interface IGestionMantenimiento extends Document {
 }
 
 const GestionMantenimientoSchema: Schema = new Schema({
-  descripcion: {
-    type: String,
-    required: true,
-  },
   gastos: {
     type: Number,
     default: 0,
