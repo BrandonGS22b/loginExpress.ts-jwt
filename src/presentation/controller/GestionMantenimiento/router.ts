@@ -1,19 +1,19 @@
 import { Router } from 'express';
 import {
-  crearSolicitud,
-  obtenerSolicitudes,
-  actualizarSolicitud
-} from './GestionMantenimiento';
+  crearMantenimiento, // Cambiado a crearMantenimiento
+  obtenerMantenimientos, // Cambiado a obtenerMantenimientos
+  actualizarMantenimiento // Cambiado a actualizarMantenimiento
+} from './GestionMantenimiento'; // Asegúrate de que la ruta sea correcta
 
 const router: Router = Router();
 
-// Ruta para crear un nuevo mensaje
-router.post('/create', crearSolicitud);
+// Ruta para crear un nuevo mantenimiento
+router.post('/create', crearMantenimiento); // Cambiado a crearMantenimiento
 
-// Ruta para obtener todos los mensajes
-router.get('/get', obtenerSolicitudes);
+// Ruta para obtener todos los mantenimientos
+router.get('/get', obtenerMantenimientos); // Cambiado a obtenerMantenimientos
 
-// Ruta para eliminar un mensaje por ID
-router.put('/update/:id', actualizarSolicitud);
+// Ruta para actualizar un mantenimiento por ID
+router.put('/update/:id', actualizarMantenimiento); // Cambiado a actualizarMantenimiento
 
 export default router;
