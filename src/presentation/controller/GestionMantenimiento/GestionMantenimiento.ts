@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import GestionMantenimiento from '../../../mongo/models/GestionMantenimiento'; // Asegúrate de que la importación sea correcta
+import GestionMantenimiento from '../../../mongo/models/GestionMantenimiento';
 
 // Obtener todos los mantenimientos
 export const obtenerMantenimientos = async (req: Request, res: Response) => {
@@ -8,19 +8,27 @@ export const obtenerMantenimientos = async (req: Request, res: Response) => {
     const mantenimientos = await GestionMantenimiento.find();
     res.json(mantenimientos);
   } catch (error) {
-    console.error('Error al obtener mantenimientos:', error); // Agrega logs para la depuración
+    console.error('Error al obtener mantenimientos:', error);
     res.status(500).json({ message: 'Error al obtener mantenimientos' });
   }
 };
 
-// Actualizar un mantenimiento con gastos, días de duración, comentarios e ID del técnico
+// Actualizar un mantenimiento con gastos, días de duración, comentarios, idTecnico y solicitudId
 export const actualizarMantenimiento = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { gastos, diasDuracion, comentarios, idTecnico } = req.body; // Añadido idTecnico
+  const { gastos, diasDuracion, comentarios, idTecnico, solicitudId } = req.body;
 
   // Validar que `id` es un ObjectId válido de MongoDB
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: 'ID de mantenimiento no válido' });
+  }
+
+  // Validar que `idTecnico` y `solicitudId`, si están presentes, sean ObjectId válidos
+  if (idTecnico && !mongoose.Types.ObjectId.isValid(idTecnico)) {
+    return res.status(400).json({ message: 'ID de técnico no válido' });
+  }
+  if (solicitudId && !mongoose.Types.ObjectId.isValid(solicitudId)) {
+    return res.status(400).json({ message: 'ID de solicitud no válido' });
   }
 
   try {
@@ -33,44 +41,49 @@ export const actualizarMantenimiento = async (req: Request, res: Response) => {
     mantenimiento.gastos = gastos !== undefined ? gastos : mantenimiento.gastos;
     mantenimiento.diasDuracion = diasDuracion !== undefined ? diasDuracion : mantenimiento.diasDuracion;
     mantenimiento.comentarios = comentarios !== undefined ? comentarios : mantenimiento.comentarios;
-    mantenimiento.idTecnico = idTecnico !== undefined ? idTecnico : mantenimiento.idTecnico; // Actualiza el idTecnico
+    mantenimiento.idTecnico = idTecnico !== undefined ? idTecnico : mantenimiento.idTecnico;
+    mantenimiento.solicitudId = solicitudId !== undefined ? solicitudId : mantenimiento.solicitudId;
 
     await mantenimiento.save();
     res.json({ message: 'Mantenimiento actualizado correctamente', mantenimiento });
   } catch (error) {
-    console.error('Error al actualizar el mantenimiento:', error); // Agrega logs para la depuración
+    console.error('Error al actualizar el mantenimiento:', error);
     res.status(500).json({ message: 'Error al actualizar el mantenimiento' });
   }
 };
 
-// Crear una nueva solicitud
+// Crear un nuevo mantenimiento
 export const crearMantenimiento = async (req: Request, res: Response) => {
-  const { descripcion, gastos, diasDuracion, comentarios, idTecnico } = req.body; // Añadido idTecnico
+  const { descripcion, gastos, diasDuracion, comentarios, idTecnico, solicitudId } = req.body;
 
-  if (!descripcion || !idTecnico) {
-    return res.status(400).json({ message: 'La descripción y el ID del técnico son obligatorios' });
+  if (!descripcion || !idTecnico || !solicitudId) {
+    return res.status(400).json({ message: 'La descripción, el ID del técnico y el ID de la solicitud son obligatorios' });
   }
 
-  // Validar que `idTecnico` es un ObjectId válido de MongoDB
+  // Validar que `idTecnico` y `solicitudId` son ObjectId válidos
   if (!mongoose.Types.ObjectId.isValid(idTecnico)) {
     return res.status(400).json({ message: 'ID de técnico no válido' });
   }
+  if (!mongoose.Types.ObjectId.isValid(solicitudId)) {
+    return res.status(400).json({ message: 'ID de solicitud no válido' });
+  }
 
   try {
-    // Crear una nueva solicitud con los datos proporcionados
+    // Crear un nuevo mantenimiento con los datos proporcionados
     const nuevoMantenimiento = new GestionMantenimiento({
       descripcion,
       gastos: gastos !== undefined ? gastos : 0,
       diasDuracion: diasDuracion !== undefined ? diasDuracion : 0,
       comentarios: comentarios !== undefined ? comentarios : '',
-      idTecnico: idTecnico, // Guarda el ID del técnico
+      idTecnico,
+      solicitudId,
     });
 
-    // Guardar la nueva solicitud en la base de datos
+    // Guardar el nuevo mantenimiento en la base de datos
     await nuevoMantenimiento.save();
     res.status(201).json({ message: 'Mantenimiento creado correctamente', nuevoMantenimiento });
   } catch (error) {
-    console.error('Error al crear el mantenimiento:', error); // Agrega logs para la depuración
+    console.error('Error al crear el mantenimiento:', error);
     res.status(500).json({ message: 'Error al crear el mantenimiento' });
   }
 };
