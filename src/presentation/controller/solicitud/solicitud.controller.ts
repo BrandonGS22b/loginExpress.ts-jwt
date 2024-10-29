@@ -99,16 +99,20 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
     const { id } = req.params;
     const updatedData = req.body;
 
+    // Validar que el ID sea válido
     if (!mongoose.isValidObjectId(id)) {
       res.status(400).json({ message: 'ID de solicitud no válido' });
       return;
     }
 
+    // Inicializar una variable para almacenar la URL de la imagen si se carga una nueva
     let imagenURL: string | undefined;
 
+    // Comprobar si se ha subido una imagen
     if (req.file) {
       const solicitud = await Solicitud.findById(id);
 
+      // Si la solicitud tiene una imagen anterior, se elimina de Firebase
       if (solicitud?.imagen) {
         const fileName = solicitud.imagen.split('/').pop()!.split('?')[0];
         const oldImageRef = ref(storage, decodeURIComponent(fileName));
@@ -117,6 +121,7 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
         });
       }
 
+      // Subir la nueva imagen a Firebase
       const fileName = `${uuidv4()}-${req.file.originalname}`;
       const imageRef = ref(storage, fileName);
 
@@ -124,15 +129,18 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
         contentType: req.file.mimetype,
       });
 
+      // Obtener la URL de la imagen subida
       imagenURL = await getDownloadURL(imageRef);
-      updatedData.imagen = imagenURL;
+      updatedData.imagen = imagenURL; // Agregar la URL de la imagen a los datos de actualización
     }
 
+    // Actualizar la solicitud en la base de datos con los datos de `updatedData`
     const solicitudActualizada = await Solicitud.findByIdAndUpdate(id, updatedData, {
       new: true,
       runValidators: true,
     });
 
+    // Verificar si la solicitud fue encontrada y actualizada
     if (!solicitudActualizada) {
       res.status(404).json({ message: 'Solicitud no encontrada' });
       return;
