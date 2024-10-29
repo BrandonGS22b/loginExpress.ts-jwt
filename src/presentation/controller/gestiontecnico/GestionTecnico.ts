@@ -22,3 +22,13 @@ export const obtenerAsignacionesPorTecnico = async (req: Request, res: Response)
     res.status(500).json({ message: 'Error al obtener asignaciones', error });
   }
 };
+
+
+export const obtenerTodasAsignaciones = async (req: Request, res: Response) => {
+  try {
+    const asignaciones = await GestionTecnicos.find();
+    res.json(asignaciones);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener todas las asignaciones', error });
+  }
+};
