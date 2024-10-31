@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { JwtAdapter } from '../../../config';
 import { upload } from '../../../middleware/fileUpload.middleware';
 import { UserModel } from '../../../mongo/models/user.model';
-
+import GestionTecnicosModel  from '../../../mongo/models/GestionTecnicos.model';
 class AuthController {
 
   // DI
@@ -291,13 +291,32 @@ getTechnicianById = async (req: Request, res: Response) => {
 
 // Método para asignar un técnico a una solicitud
 assignTechnician = async (req: Request, res: Response) => {
-  const { requestId, technicianId } = req.body; // Asumiendo que se envían ambos IDs en el cuerpo de la solicitud
+  const { solicitudId, tecnicoId, descripcion, estado } = req.body; // Agrega los campos necesarios
   
   try {
-    const result = await this.authService.assignTechnician(requestId, technicianId); // Llama al servicio para asignar el técnico
-    return res.status(200).json({ message: 'Technician assigned successfully', result });
+    // Verifica si la asignación ya existe
+    const existingAssignment = await GestionTecnicosModel.findOne({ solicitudId });
+    if (existingAssignment) {
+      return res.status(400).json({ message: 'Esta solicitud ya tiene un técnico asignado' });
+    }
+
+    // Crea la asignación del técnico a la solicitud
+    const newAssignment = await GestionTecnicosModel.create({
+      solicitudId,
+      tecnicoId,
+      descripcion,
+      estado,
+    });
+
+    return res.status(201).json({
+      message: 'Technician assigned successfully',
+      result: newAssignment,
+    });
   } catch (error) {
-    return this.handleError(error, res);
+    console.error('Error assigning technician:', error);
+    return res.status(500).json({
+      message: 'Error al asignar técnico o actualizar el estado de la solicitud. Inténtalo de nuevo más tarde.',
+    });
   }
 };
 }
