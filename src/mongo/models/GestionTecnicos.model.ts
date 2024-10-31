@@ -15,7 +15,7 @@ const GestionTecnicosSchema: Schema = new Schema({
   solicitudId: { type: Schema.Types.ObjectId, ref: 'Solicitud', required: true },
   tecnicoId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   descripcion: { type: String },
-  estado: { type: String, required: true },
+  estado: { type: String},
   gastos: { type: Number },
   diasDuracion: { type: Number },
   comentarios: { type: String }
