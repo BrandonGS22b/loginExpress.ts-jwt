@@ -14,7 +14,7 @@ interface IGestionTecnicos extends Document {
 const GestionTecnicosSchema: Schema = new Schema({
   solicitudId: { type: Schema.Types.ObjectId, ref: 'Solicitud', required: true },
   tecnicoId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  descripcion: { type: String, required: true },
+  descripcion: { type: String },
   estado: { type: String, required: true },
   gastos: { type: Number },
   diasDuracion: { type: Number },
