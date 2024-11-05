@@ -7,6 +7,7 @@ interface IGestionTecnicos extends Document {
   descripcion: string;
   estado: string;
   gastos?: number;
+  imagen?: string;
   diasDuracion?: number;
   comentarios?: string;
 }
@@ -17,6 +18,7 @@ const GestionTecnicosSchema: Schema = new Schema({
   descripcion: { type: String },
   estado: { type: String},
   gastos: { type: Number },
+  imagen: { type: String, required: false },
   diasDuracion: { type: Number },
   comentarios: { type: String }
 });
