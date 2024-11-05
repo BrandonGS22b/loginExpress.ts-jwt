@@ -54,9 +54,23 @@ export const crearAsignacion = async (req: Request, res: Response): Promise<void
 export const obtenerAsignacionesPorTecnico = async (req: Request, res: Response) => {
   try {
     const { tecnicoId } = req.params;
-    const asignaciones = await GestionTecnicos.find({ tecnicoId });
+
+    // Verificar que el ID del técnico sea un ObjectId válido
+    if (!mongoose.isValidObjectId(tecnicoId)) {
+      return res.status(400).json({ message: 'ID de técnico no válido' });
+    }
+
+    // Buscar asignaciones para el técnico específico
+    const asignaciones = await GestionTecnicos.find({ tecnicoId: new mongoose.Types.ObjectId(tecnicoId) });
+
+    // Verificar si se encontraron asignaciones
+    if (asignaciones.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron asignaciones para este técnico' });
+    }
+
     res.json(asignaciones);
   } catch (error) {
+    console.error('Error al obtener asignaciones:', error);
     res.status(500).json({ message: 'Error al obtener asignaciones', error });
   }
 };
