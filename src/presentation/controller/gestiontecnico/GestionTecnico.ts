@@ -51,6 +51,8 @@ export const crearAsignacion = async (req: Request, res: Response): Promise<void
     res.status(500).json({ message: 'Error al crear la asignación' });
   }
 };
+
+
 export const obtenerAsignacionesPorTecnico = async (req: Request, res: Response) => {
   try {
     const { tecnicoId } = req.params;
@@ -60,8 +62,14 @@ export const obtenerAsignacionesPorTecnico = async (req: Request, res: Response)
       return res.status(400).json({ message: 'ID de técnico no válido' });
     }
 
+    // Convertir tecnicoId en ObjectId para asegurarnos de que coincida con el tipo en la base de datos
+    const tecnicoObjectId = new mongoose.Types.ObjectId(tecnicoId);
+
+    // Depuración: Mostrar el ID y el campo utilizado para la búsqueda
+    console.log('ID del técnico recibido:', tecnicoObjectId);
+
     // Buscar asignaciones para el técnico específico
-    const asignaciones = await GestionTecnicos.find({ tecnicoId: new mongoose.Types.ObjectId(tecnicoId) });
+    const asignaciones = await GestionTecnicos.find({ tecnicoId: tecnicoObjectId });
 
     // Verificar si se encontraron asignaciones
     if (asignaciones.length === 0) {
@@ -74,6 +82,7 @@ export const obtenerAsignacionesPorTecnico = async (req: Request, res: Response)
     res.status(500).json({ message: 'Error al obtener asignaciones', error });
   }
 };
+
 // Obtener todas las asignaciones (incluyendo imágenes)
 export const obtenerTodasAsignaciones = async (req: Request, res: Response): Promise<void> => {
   try {
