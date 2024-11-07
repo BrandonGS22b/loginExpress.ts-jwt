@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
+//este es el de historiamantenimiento
 interface IGestionMantenimiento extends Document {
   descripcion: string;
   gastos: number;
@@ -17,10 +17,6 @@ const GestionMantenimientoSchema: Schema = new Schema({
   diasDuracion: {
     type: Number,
     default: 0,
-  },
-  comentarios: {
-    type: String,
-    default: '',
   },
   idTecnico: {
     type: mongoose.Types.ObjectId,

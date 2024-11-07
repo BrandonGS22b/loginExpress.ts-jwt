@@ -13,14 +13,14 @@ interface IGestionTecnicos extends Document {
 }
 
 const GestionTecnicosSchema: Schema = new Schema({
-  solicitudId: { type: Schema.Types.ObjectId, ref: 'Solicitud', required: true },
-  tecnicoId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  descripcion: { type: String },
+  solicitudId: { type: Schema.Types.ObjectId, ref: 'Solicitud', required: false },
+  tecnicoId: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+  descripcion: { type: String, required: false },
   estado: { type: String},
   gastos: { type: Number },
   imagen: { type: String, required: false },
   diasDuracion: { type: Number },
-  comentarios: { type: String }
+  comentarios: { type: String, required: false }
 });
 
 export default mongoose.model<IGestionTecnicos>('GestionTecnicos', GestionTecnicosSchema);
