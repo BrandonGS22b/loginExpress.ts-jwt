@@ -1,49 +1,25 @@
 import jwt from 'jsonwebtoken';
 import { envs } from './envs';
 
-
 const JWT_SEED = envs.JWT_SEED;
-
-
 
 export class JwtAdapter {
 
-  // DI?
-
-  static async generateToken( payload:any, duration: string = '2m' ) {
-
-    return new Promise((resolve) => {
-      jwt.sign(payload, JWT_SEED, { expiresIn: duration }, (err, token) => {
-        
-        if ( err ) return resolve(null);
-
-        resolve(token)
-
-      });
-    })
-
-
-
+  // Generación del token de manera síncrona
+  static generateToken(payload: any, duration: string = '2m'): string | null {
+    try {
+      return jwt.sign(payload, JWT_SEED, { expiresIn: duration });
+    } catch (err) {
+      return null; // Si hay un error, devuelve null
+    }
   }
 
-
-  static validateToken<T>(token: string): Promise< T | null> {
-    
-    return new Promise( (resolve) => {
-
-      jwt.verify( token, JWT_SEED, (err, decoded) => {
-
-        if( err ) return resolve(null);
-
-        resolve( decoded as T);
-
-      });
-
-
-
-    })
+  // Validación del token de manera síncrona
+  static validateToken<T>(token: string): T | null {
+    try {
+      return jwt.verify(token, JWT_SEED) as T;
+    } catch (err) {
+      return null; // Si hay un error, devuelve null
+    }
   }
-
-
 }
-

@@ -136,8 +136,8 @@ export const actualizarAsignacion = async (req: Request, res: Response): Promise
 
     // Actualizar la asignación en la base de datos
     const asignacionActualizada = await GestionTecnicos.findByIdAndUpdate(id, updatedData, {
-      new: true,
-      runValidators: true,
+      new: true,  // Devuelve el documento actualizado
+      runValidators: true,  // Ejecuta las validaciones del esquema
     });
 
     if (!asignacionActualizada) {
