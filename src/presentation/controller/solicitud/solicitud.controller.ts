@@ -153,36 +153,42 @@ export const actualizarSolicitud = async (req: Request, res: Response): Promise<
   }
 };
 
-// Eliminar una solicitud
+// Eliminar una solicitud (y la imagen asociada si existe)
 export const eliminarSolicitud = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
+    // Validar el ID de la solicitud
     if (!mongoose.isValidObjectId(id)) {
       res.status(400).json({ message: 'ID de solicitud no válido' });
       return;
     }
 
-    const solicitud = await Solicitud.findByIdAndDelete(id);
-    if (!solicitud) {
-      res.status(404).json({ message: 'Solicitud no encontrada' });
-      return;
-    }
+    const solicitud = await Solicitud.findById(id);
 
-    if (solicitud.imagen) {
+    // Verificar si la solicitud existe y tiene una imagen
+    if (solicitud?.imagen) {
       const fileName = solicitud.imagen.split('/').pop()!.split('?')[0];
       const imageRef = ref(storage, decodeURIComponent(fileName));
+
+      // Eliminar la imagen de Firebase
       await deleteObject(imageRef).catch((err) => {
         console.error('Error al eliminar la imagen de Firebase:', err);
       });
     }
 
-    res.status(204).send(); // No content
+    // Eliminar la solicitud de la base de datos
+    const solicitudEliminada = await Solicitud.findByIdAndDelete(id);
+
+    // Verificar si la solicitud fue eliminada
+    if (!solicitudEliminada) {
+      res.status(404).json({ message: 'Solicitud no encontrada' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Solicitud eliminada correctamente' });
   } catch (error) {
     console.error('Error al eliminar la solicitud:', error);
     res.status(500).json({ message: 'Error al eliminar la solicitud' });
   }
 };
-
-// Exportamos el middleware de multer para usarlo en las rutas
-export { upload };

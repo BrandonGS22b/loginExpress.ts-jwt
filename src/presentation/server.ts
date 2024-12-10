@@ -49,21 +49,9 @@ export class Server {
       });
     });
 
-
-
-
-    const storage = multer.diskStorage({
-      destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../../uploads')); // Carpeta de destino
-      },
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname); // Nombre único
-      }
-    });
-    
+    const storage = multer.memoryStorage(); // Usamos almacenamiento en memoria para Firebase
     const upload = multer({ storage });
-    
+
     // Ruta para subir archivos
     this.app.post('/upload', upload.single('image'), (req, res) => {
       if (!req.file) {
@@ -71,8 +59,6 @@ export class Server {
       }
       res.status(200).send({ filename: req.file.filename });
     });
-
-
 
     // Crear el servidor HTTP
     const httpServer = new HttpServer(this.app);
@@ -91,9 +77,9 @@ export class Server {
     this.serverListener = httpServer.listen(this.port, () => {
       console.log(`Servidor corriendo en el puerto: ${this.port}`);
     });
-  };
+  }
 
   public close() {
     this.serverListener?.close();
-  }
+  }
 }
