@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 
 // Configuración de multer para manejar la subida de archivos
 const multerStorage = multer.memoryStorage(); // Usamos memoria temporal para Firebase
-const upload = multer({ storage: multerStorage });
+export  const upload = multer({ storage: multerStorage });
 
 // Crear una nueva solicitud con imagen
 export const crearSolicitud = async (req: Request, res: Response): Promise<void> => {
