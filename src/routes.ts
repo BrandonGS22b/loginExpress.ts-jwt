@@ -22,7 +22,7 @@ export class AppRoutes {
     // Definir las rutas
     router.use('/api/auth', Authroutes.routes);
     router.use('/api/GestionTecnico',GestionTecnicosRoutes );
-    // Rutas para cada uno de los modelos
+    // Rutas para cada uno de los modeloss
     router.use('/api/solicitud', solicitud);
     router.use('/api/categoriaProblema', categoriaProblemaRoutes);
     router.use('/api/mantenimiento', mantenimientoRoutes);
