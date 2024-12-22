@@ -24,52 +24,47 @@ class AuthController {
 
 
   //controller para el inicio de session
-  loginUser = async (req: Request, res: Response) => {
+  loginUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       // Validar los datos recibidos
       const [error, loginUserDto] = LoginUserDto.create(req.body);
       if (error) {
-        return res.status(400).json({ error });
+        return res.status(400).json({ error: 'Invalid input data', details: error });
       }
   
-      // Autenticar al usuario
-      const { user, token: generatedToken } = await this.authService.loginUser(loginUserDto!);
+      // Autenticar al usuario y generar token
+      const { user } = await this.authService.loginUser(loginUserDto!);
       if (!user) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
   
-      const expiresIn = 60; // 1 hora en segundos
-  
-      // Generar el token JWT usando user._id y el rol
-      const token = await JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h'); // Usa 1h para 1 hora
-      if (!token) {
-        return res.status(500).json({ error: 'Failed to generate token' });
-      }
-  
-      // Configurar la cookie HTTP-only con el token (opcional si solo quieres usar el token desde el cliente)
+      // Generar el token JWT
+      const expiresIn = 3600; // 1 hora en segundos
+      const token = JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h');
+      
+      // Configurar la cookie HTTP-only con el token
       res.cookie('token', token, {
-        httpOnly: true, // Protege la cookie para que solo sea accesible desde el servidor
-        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: expiresIn * 1000, // 1 hora
-        sameSite: 'strict' // Prevenir CSRF
+        sameSite: 'strict',
       });
   
-      // Devolver respuesta exitosa con el token, usuario y tiempo de expiración
-      return res.status(200).json({ 
-        message: 'Login successful', 
-        user: { 
-          _id: user._id, 
-          name: user.name, 
-          email: user.email, 
-          emailValidated: user.emailValidated, 
-          role: user.role // Asegúrate de que el rol esté aquí
+      // Devolver respuesta exitosa
+      return res.status(200).json({
+        message: 'Login successful',
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          emailValidated: user.emailValidated,
         },
-        token, // Aquí incluimos el token en la respuesta JSON
-        expiresIn, // Incluimos el tiempo de expiración en la respuesta
+        token,
+        expiresIn,
       });
     } catch (error) {
-      // Manejar errores de manera uniforme
-      return this.handleError(error, res);
+      return res.status(500).json({ error: 'An error occurred during login' });
     }
   };
 
