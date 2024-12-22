@@ -5,6 +5,7 @@ import {
   obtenerSolicitudPorId, 
   actualizarSolicitud, 
   eliminarSolicitud, 
+  obtenerSolicitudesPorUsuarioId,
   upload // Importamos el middleware de multer
 } from './solicitud.controller';
 
@@ -25,6 +26,8 @@ router.put('/update/:id', upload.single('imagen'), actualizarSolicitud);
 // Ruta para eliminar una solicitud por ID
 router.delete('/delete/:id', eliminarSolicitud);
 //exportacion a otros componentes
+
+router.get('/getall/:id', obtenerSolicitudesPorUsuarioId);
 
 
 export default router;

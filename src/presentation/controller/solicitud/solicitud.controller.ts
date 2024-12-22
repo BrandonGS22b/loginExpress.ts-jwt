@@ -59,6 +59,34 @@ export const crearSolicitud = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ message: 'Error al crear la solicitud' });
   }
 };
+//obtener solicitudes por id usuario
+export const obtenerSolicitudesPorUsuarioId = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    // Validar que el ID del usuario sea un ObjectId válido
+    if (!mongoose.isValidObjectId(id)) {
+      res.status(400).json({ message: 'ID de usuario no válido' });
+      return;
+    }
+
+    // Buscar solicitudes asociadas al usuario específico
+    const solicitudes = await Solicitud.find({ usuario_id: id });
+
+    // Verificar si se encontraron solicitudes
+    if (!solicitudes || solicitudes.length === 0) {
+      res.status(404).json({ message: 'No se encontraron solicitudes para este usuario' });
+      return;
+    }
+
+    // Responder con las solicitudes encontradas
+    res.status(200).json(solicitudes);
+  } catch (error) {
+    console.error('Error al obtener solicitudes por usuario:', error);
+    res.status(500).json({ message: 'Error interno al obtener solicitudes' });
+  }
+};
+
 
 // Obtener todas las solicitudes (incluyendo imágenes)
 export const obtenerSolicitudes = async (req: Request, res: Response): Promise<void> => {
