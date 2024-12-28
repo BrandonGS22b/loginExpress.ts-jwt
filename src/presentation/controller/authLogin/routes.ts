@@ -25,6 +25,9 @@ class AuthRoutes {
     router.get('/users/:userId', controller.getUserById);
     router.post('/users/:id/upload-image', controller.uploadUserImage); 
     router.get('/validate-email/:token', controller.validateEmail);
+    // Ruta para desactivar usuario
+    router.patch('/users/:userId/disable', controller.disableUser);
+    router.patch('/users/:userId/enable', controller.enableUser);
 
 
     router.get('/technicians', controller.getTechnicians); // Para obtener todos los técnicos

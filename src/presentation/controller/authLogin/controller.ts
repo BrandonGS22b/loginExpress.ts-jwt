@@ -314,5 +314,50 @@ assignTechnician = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+// Desactivar usuario
+disableUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { estado: "inactivo" }, // Cambia el estado del usuario
+      { new: true } // Devuelve el documento actualizado
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "User deactivated successfully", user: updatedUser });
+  } catch (error) {
+    return this.handleError(error, res);
+  }
+};
+
+// Activar usuario
+enableUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { estado: "activo" }, // Cambia el estado del usuario
+      { new: true } // Devuelve el documento actualizado
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "User activated successfully", user: updatedUser });
+  } catch (error) {
+    return this.handleError(error, res);
+  }
+};
+
+
 }
 export default AuthController;
