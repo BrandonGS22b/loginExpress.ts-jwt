@@ -35,6 +35,19 @@ const userSchema = new mongoose.Schema( {
     enum: ['activo', 'inactivo'],
     default: 'activo', // Estado inicial predeterminado
   },
+  direccion:{
+    type: String,
+    required: true
+},
+telefono:{
+  type: String,
+  required: true
+},
+
+tipodedocumento:{
+  type: String,
+  required: true
+},
 
 } );
 
