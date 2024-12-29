@@ -48,6 +48,10 @@ tipodedocumento:{
   type: String,
   required: true
 },
+documento:{
+  type: Number,
+  required: true
+},
 
 } );
 
