@@ -48,9 +48,10 @@ tipodedocumento:{
   type: String,
   required: true
 },
-documento:{
-  type: Number,
-  required: true
+documento: {
+  type: String, // Cambiado a String para más flexibilidad.
+  required: [true, 'El documento es obligatorio.'],
+  match: [/^[0-15]{5,15}$/, 'El documento debe tener entre 5 y 10 dígitos.'],
 },
 
 } );
