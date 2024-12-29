@@ -1,28 +1,68 @@
 import { regularExps } from '../config/';
 
+const ALLOWED_ROLES = ['usuario', 'admin', 'tecnico'] as const;
+const ALLOWED_DOCUMENT_TYPES = ['CC', 'TI', 'CE', 'PASSPORT'] as const; // Ejemplo de tipos de documento
+
 export class RegisterUserDto {
   private constructor(
     public name: string,
     public email: string,
     public password: string,
-    public role: string // Añadir role aquí
+    public role: typeof ALLOWED_ROLES[number],
+    public direccion: string,
+    public telefono: string,
+    public tipodedocumento: typeof ALLOWED_DOCUMENT_TYPES[number],
+    public documento: number
   ) {}
 
   static create(object: { [key: string]: any }): [string?, RegisterUserDto?] {
-    const { name, email, password, role } = object; // Incluir role en la desestructuración
+    const { 
+      name, 
+      email, 
+      password, 
+      role, 
+      direccion, 
+      telefono, 
+      tipodedocumento, 
+      documento 
+    } = object;
 
-    if (!name) return ['Missing name'];
-    if (!/^[a-zA-Z\s]+$/.test(name)) return ['Name contains invalid characters'];
+    // Validación del nombre
+    if (!name) return ['Name is required'];
+    if (!/^[a-zA-Z\s]+$/.test(name)) return ['Name can only contain letters and spaces'];
 
-    if (!email) return ['Missing email'];
+    // Validación del email
+    if (!email) return ['Email is required'];
     if (!regularExps.email.test(email)) return ['Email is not valid'];
 
-    if (!password) return ['Missing password'];
-    if (password.length < 4) return ['Password too short'];
+    // Validación de la contraseña
+    if (!password) return ['Password is required'];
+    if (password.length < 4) return ['Password must be at least 4 characters long'];
 
-    if (!role) return ['Missing role']; // Validar que el rol esté presente
-    if (!['usuario', 'admin', 'tecnico'].includes(role)) return ['Role must be one of: usuario, admin, tecnico']; // Validar que el rol sea uno de los permitidos
+    // Validación del rol
+    if (!role) return ['Role is required'];
+    if (!ALLOWED_ROLES.includes(role)) {
+      return [`Role must be one of: ${ALLOWED_ROLES.join(', ')}`];
+    }
 
-    return [undefined, new RegisterUserDto(name, email, password, role)];
+    // Validación de dirección
+    if (!direccion) return ['Address (direccion) is required'];
+
+    // Validación de teléfono
+    if (!telefono) return ['Phone number (telefono) is required'];
+    if (!/^\d+$/.test(telefono)) return ['Phone number must contain only digits'];
+
+    // Validación del tipo de documento
+    if (!tipodedocumento) return ['Document type (tipodedocumento) is required'];
+    if (!ALLOWED_DOCUMENT_TYPES.includes(tipodedocumento)) {
+      return [`Document type must be one of: ${ALLOWED_DOCUMENT_TYPES.join(', ')}`];
+    }
+
+    // Validación del documento
+    if (!documento) return ['Document number (documento) is required'];
+    if (!Number.isInteger(documento)) return ['Document number must be an integer'];
+
+    // Si pasa todas las validaciones
+    return [undefined, new RegisterUserDto(name, email, password, role, direccion, telefono, tipodedocumento, documento)];
   }
 }
