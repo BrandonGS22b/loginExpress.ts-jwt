@@ -6,7 +6,7 @@ const JWT_SEED = envs.JWT_SEED;
 export class JwtAdapter {
 
   // Generación del token de manera síncrona
-  static generateToken(payload: Record<string, any>, duration: string = '2m'): string {
+  static generateToken(payload: Record<string, any>, duration: string = '5m'): string {
     try {
       // Verifica que la duración del token sea válida
       const isValidDuration = /^(\d+)([smhdw])$/.test(duration);

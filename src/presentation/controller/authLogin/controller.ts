@@ -173,20 +173,7 @@ class AuthController {
 
 // Método para obtener todos los usuarios con validación de token
 getAllUsers = async (req: Request, res: Response) => {
-  // Extraer el token del encabezado Authorization
-  const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Token is missing' });
-  }
-
   try {
-    // Validar el token de manera asíncrona
-    const payload = await JwtAdapter.validateToken(token); // Usamos await para esperar la promesa
-    if (!payload) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-
     // Llamar al servicio para obtener todos los usuarios
     const users = await this.authService.getAllUsers();
 
