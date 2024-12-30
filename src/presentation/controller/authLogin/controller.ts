@@ -72,17 +72,18 @@ class AuthController {
 
   //controller para el registro de usuario
   registerUser = (req: Request, res: Response) => {
+    console.log("Request body:", req.body); // Log de los datos recibidos
     const [error, registerDto] = RegisterUserDto.create(req.body);
     
-    if (error || !registerDto) { 
-      return res.status(400).json({ error: 'Invalid input data' });
+    if (error || !registerDto) {
+      console.error("Validation error:", error); // Log del error de validación
+      return res.status(400).json({ error });
     }
   
-    // Luego puedes proceder con la lógica
     this.authService.registerUser(registerDto)
       .then((user) => res.json(user))
       .catch((error) => this.handleError(error, res));
-  }
+  };
 
   //controller para la actualizacion de usarios
   updateUser = async (req: Request, res: Response) => {
