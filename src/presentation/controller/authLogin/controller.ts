@@ -185,7 +185,13 @@ getAllUsers = async (req: Request, res: Response) => {
         email: user.email,
         emailValidated: user.emailValidated,
         role: user.role,
+        estado: user.estado,
+        telefono: user.telefono,
+        tipodedocumento: user.tipodedocumento,
+        direccion: user.direccion,
+        documento: user.documento,
         img: user.img || null // Puedes añadir otros campos o transformarlos
+        
       };
     });
 
