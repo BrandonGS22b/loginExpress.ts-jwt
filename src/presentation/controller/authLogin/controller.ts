@@ -181,8 +181,8 @@ getAllUsers = async (req: Request, res: Response) => {
   }
 
   try {
-    // Valida el token en el controlador
-    const payload = JwtAdapter.validateToken(token);
+    // Valida el token de manera asíncrona
+    const payload = await JwtAdapter.validateToken(token); // Usamos await para esperar la promesa
     if (!payload) {
       return res.status(401).json({ error: 'Invalid token' });
     }
