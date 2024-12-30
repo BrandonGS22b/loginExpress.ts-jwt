@@ -29,19 +29,26 @@ class AuthController {
       // Validar los datos recibidos
       const [error, loginUserDto] = LoginUserDto.create(req.body);
       if (error) {
+        console.error('Validation error:', error); // Agregar más detalles para depurar
         return res.status(400).json({ error: 'Invalid input data', details: error });
       }
   
       // Autenticar al usuario y generar token
       const { user } = await this.authService.loginUser(loginUserDto!);
       if (!user) {
+        console.error('User not found or invalid credentials'); // Agregar más detalles
         return res.status(401).json({ error: 'Invalid credentials' });
       }
   
       // Generar el token JWT
       const expiresIn = 3600; // 1 hora en segundos
       const token = JwtAdapter.generateToken({ id: user._id, role: user.role }, '1h');
-      
+  
+      if (!token) {
+        console.error('Failed to generate token'); // Añadir depuración para el token
+        return res.status(500).json({ error: 'Failed to generate token' });
+      }
+  
       // Configurar la cookie HTTP-only con el token
       res.cookie('token', token, {
         httpOnly: true,
@@ -58,14 +65,22 @@ class AuthController {
           name: user.name,
           email: user.email,
           role: user.role,
-          estado:user.estado,
+          estado: user.estado,
           emailValidated: user.emailValidated,
         },
         token,
         expiresIn,
       });
-    } catch (error) {
-      return res.status(500).json({ error: 'An error occurred during login' });
+    } catch (error: unknown) {
+      // Verificamos si el error es una instancia de Error
+      if (error instanceof Error) {
+        console.error('Unexpected error during login:', error.message); // Mostrar el mensaje de error para depuración
+        return res.status(500).json({ error: 'An error occurred during login', details: error.message });
+      } else {
+        // Si el error no es una instancia de Error, mostramos un mensaje general
+        console.error('Unexpected error during login:', error);
+        return res.status(500).json({ error: 'An error occurred during login', details: 'Unknown error' });
+      }
     }
   };
 
