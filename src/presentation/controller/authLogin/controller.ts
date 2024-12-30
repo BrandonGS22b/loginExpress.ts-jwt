@@ -181,7 +181,7 @@ getAllUsers = async (req: Request, res: Response) => {
   }
 
   try {
-    // Valida el token de manera asíncrona
+    // Validar el token de manera asíncrona
     const payload = await JwtAdapter.validateToken(token); // Usamos await para esperar la promesa
     if (!payload) {
       return res.status(401).json({ error: 'Invalid token' });
@@ -202,11 +202,8 @@ getAllUsers = async (req: Request, res: Response) => {
       };
     });
 
-    // Incluir el token en la respuesta
-    return res.status(200).json({
-      token,        // Devolver el token que se usó en la solicitud
-      users: formattedUsers // Los usuarios formateados
-    });
+    return res.status(200).json({ users: formattedUsers });
+
   } catch (error: unknown) {
     console.error('Error fetching users:', error);
     if (error instanceof Error) {
