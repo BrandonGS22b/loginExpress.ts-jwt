@@ -58,6 +58,7 @@ class AuthController {
           name: user.name,
           email: user.email,
           role: user.role,
+          estado:user.estado,
           emailValidated: user.emailValidated,
         },
         token,
