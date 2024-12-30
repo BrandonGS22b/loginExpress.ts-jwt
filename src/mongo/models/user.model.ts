@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema( {
 
   name: {
     type: String,
-    required: [ true, 'Name is required' ]
+    required: [true, 'Name is required'],
   },
   email: {
     type: String,
-    required: [ true, 'Email is required' ],
+    required: [true, 'Email is required'],
     unique: true,
   },
   emailValidated: {
@@ -18,43 +18,42 @@ const userSchema = new mongoose.Schema( {
   },
   password: {
     type: String,
-    required: [ true, 'Password is required' ]
+    required: [true, 'Password is required'],
   },
   img: {
     type: String,
-    required: false
+    required: false,
   },
   role: {
     type: String,
-    required: [true, 'Role is required= usuario-admin-tecnico'],
+    required: [true, 'Role is required'],
     enum: ['usuario', 'admin', 'tecnico'],
-    message: 'Role must be either usuario, admin, or tecnico',
   },
   estado: {
     type: String,
     enum: ['activo', 'inactivo'],
-    default: 'activo', // Estado inicial predeterminado
+    default: 'activo',
   },
-  direccion:{
+  direccion: {
     type: String,
-    required: true
-},
-telefono:{
-  type: String,
-  required: true
-},
-
-tipodedocumento:{
-  type: String,
-  required: true
-},
-documento: {
-  type: String, // Cambiado a String para más flexibilidad.
-  required: [true, 'El documento es obligatorio.'],
-  match: [/^[0-15]{5,15}$/, 'El documento debe tener entre 5 y 10 dígitos.'],
-},
-
-} );
+    required: true,
+  },
+  telefono: {
+    type: String,
+    required: true,
+    match: [/^[0-9]{10}$/, 'El teléfono debe tener 10 dígitos.'],
+  },
+  tipodedocumento: {
+    type: String,
+    required: true,
+    enum: ['CC', 'TI', 'Pasaporte', 'Cédula de Extranjería'],
+  },
+  documento: {
+    type: String,
+    required: [true, 'El documento es obligatorio.'],
+    match: [/^[0-9]{5,15}$/, 'El documento debe tener entre 5 y 15 dígitos.'],
+  },
+});
 
 userSchema.set('toJSON', {
   virtuals: true,
