@@ -7,6 +7,7 @@ import { JwtAdapter } from '../../../config';
 import { upload } from '../../../middleware/fileUpload.middleware';
 import { UserModel } from '../../../mongo/models/user.model';
 import GestionTecnicosModel  from '../../../mongo/models/GestionTecnicos.model';
+
 class AuthController {
 
   // DI
@@ -291,6 +292,38 @@ getTechnicianById = async (req: Request, res: Response) => {
     return this.handleError(error, res);
   }
 };
+
+
+
+
+public async getUsuariosConRol(req: Request, res: Response) {
+  try {
+    const usuarios = await UserModel.find({ role: 'admin' });
+    
+    if (!usuarios.length) {
+      return res.status(404).json({ error: 'No users found' });
+    }
+
+    const usuariosSinContrasenia = usuarios.map(usuario => {
+      const { password, ...usuarioSinContrasenia } = usuario.toObject();
+      return usuarioSinContrasenia;
+    });
+
+    return res.status(200).json(usuariosSinContrasenia);
+  } catch (error: unknown) {
+    console.error('Error getting users:', error);
+
+    // Verificamos si el error es un objeto de tipo Error
+    if (error instanceof Error) {
+      return res.status(500).json({ error: `Error getting users: ${error.message}` });
+    }
+
+    // En caso de que el error no sea una instancia de Error
+    return res.status(500).json({ error: 'An unknown error occurred' });
+  }
+}
+
+
 
 
 // Método para asignar un técnico a una solicitud

@@ -183,12 +183,6 @@ public async getUserById(userId: string) {
 
 
 
-
-
-
-
-
-
   //peticion al modelo para guardar la imagen
 
   public async updateUserImage(userId: string, imageUrl: string) {
@@ -265,6 +259,33 @@ public async getTechnicianById(userId: string) {
 }
 
 
+
+public async getUsuariosConRol() {
+  try {
+    // Busca todos los usuarios con el rol 'usuario'
+    const usuarios = await UserModel.find({ role: 'usuario' });
+
+    // Si no hay usuarios, lanzamos un error
+    if (!usuarios || usuarios.length === 0) {
+      throw new Error('No users found');
+    }
+
+    // Excluir la contraseña antes de devolver los objetos
+    const usuariosSinContrasenia = usuarios.map(usuario => {
+      const { password, ...usuarioSinContrasenia } = usuario.toObject();
+      return usuarioSinContrasenia;
+    });
+
+    return usuariosSinContrasenia;
+
+  } catch (error) {
+    console.error('Error getting users:', error);
+    throw new Error('Error getting users');
+  }
+}
+
+
+
   
   public async assignTechnician(userId: string, taskId: string) {
     try {
@@ -272,16 +293,6 @@ public async getTechnicianById(userId: string) {
       if (!user || user.role !== 'tecnico') {
         throw new Error('Technician not found');
       }
-  
-      // Aquí, lógicamente, asignarías la tarea (taskId) al técnico (userId)
-      // Por ejemplo, actualizando un modelo de tareas o similar.
-  
-      // Suponiendo que hay un modelo de tarea
-      // const task = await TaskModel.findById(taskId);
-      // if (!task) throw new Error('Task not found');
-      // task.assignedTo = userId;
-      // await task.save();
-  
       return { message: 'Technician assigned successfully' };
     } catch (error) {
       throw new Error('Error assigning technician');
