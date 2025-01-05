@@ -298,7 +298,7 @@ getTechnicianById = async (req: Request, res: Response) => {
 
 public async getUsuariosConRol(req: Request, res: Response) {
   try {
-    const usuarios = await UserModel.find({ role: 'admin' });
+    const usuarios = await UserModel.find({ role: 'usuario' });
     
     if (!usuarios.length) {
       return res.status(404).json({ error: 'No users found' });
