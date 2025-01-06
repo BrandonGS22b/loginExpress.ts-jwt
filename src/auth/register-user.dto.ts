@@ -1,6 +1,6 @@
 import { regularExps } from '../config/';
 
-const ALLOWED_ROLES = ['usuario', 'admin', 'tecnico'] as const;
+const ALLOWED_ROLES = ['usuario', 'admin', 'tecnico','auxiliar'] as const;
 const ALLOWED_DOCUMENT_TYPES = ['CC', 'TI', 'CE', 'PASSPORT'] as const; // Ejemplo de tipos de documento
 
 export class RegisterUserDto {
