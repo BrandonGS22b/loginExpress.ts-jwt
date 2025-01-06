@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema( {
     type: String,
     required: false,
   },
+  //se agrega role auxiliar 
   role: {
     type: String,
     required: [true, 'Role is required'],
