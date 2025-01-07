@@ -7,7 +7,7 @@ import { JwtAdapter } from '../../../config';
 import { upload } from '../../../middleware/fileUpload.middleware';
 import { UserModel } from '../../../mongo/models/user.model';
 import GestionTecnicosModel  from '../../../mongo/models/GestionTecnicos.model';
-import bcrypt from 'bcrypt';
+const bcrypt = require('bcryptjs');
 
 class AuthController {
 
