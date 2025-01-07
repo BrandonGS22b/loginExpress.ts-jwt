@@ -7,6 +7,7 @@ import { JwtAdapter } from '../../../config';
 import { upload } from '../../../middleware/fileUpload.middleware';
 import { UserModel } from '../../../mongo/models/user.model';
 import GestionTecnicosModel  from '../../../mongo/models/GestionTecnicos.model';
+import bcrypt from 'bcrypt';
 
 class AuthController {
 
@@ -399,6 +400,42 @@ enableUser = async (req: Request, res: Response) => {
     return this.handleError(error, res);
   }
 };
+
+
+async changePassword(req: Request, res: Response) {
+  const { correo, documento, nuevaClave } = req.body; // Correo, documento y nueva contraseña recibidos en el cuerpo
+
+  try {
+    // Validar que se proporcionaron todos los datos necesarios
+    if (!correo || !documento || !nuevaClave) {
+      return res.status(400).json({ error: 'Correo, documento y nuevaClave son requeridos' });
+    }
+
+    // Buscar al usuario por correo
+    const user = await UserModel.findOne({ correo });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verificar si el documento proporcionado es correcto
+    if (user.documento !== documento) {
+      return res.status(400).json({ error: 'Documento incorrecto' });
+    }
+
+    // Encriptar la nueva contraseña
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(nuevaClave, saltRounds);
+
+    // Actualizar la contraseña en la base de datos
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    return res.status(500).json({ error: 'An error occurred while changing the password' });
+  }
+}
 
 
 }

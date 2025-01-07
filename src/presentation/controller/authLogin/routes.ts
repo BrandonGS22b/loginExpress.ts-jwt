@@ -19,6 +19,8 @@ class AuthRoutes {
     // Definir las rutas para el login que es controller.ts
     router.post('/login', controller.loginUser);
     router.post('/register', controller.registerUser);
+    router.patch('/changePassword', controller.changePassword);
+
     router.get('/get', controller.getAllUsers); 
     router.put('/users/:userId', controller.updateUser);
     router.delete('/users/:userId', controller.deleteUser);
