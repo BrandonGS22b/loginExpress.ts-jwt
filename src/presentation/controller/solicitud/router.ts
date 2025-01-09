@@ -6,11 +6,13 @@ import {
   actualizarSolicitud, 
   eliminarSolicitud, 
   obtenerSolicitudesPorUsuarioId,
-  upload // Importamos el middleware de multer
+  upload, // Importamos el middleware de multer
+  exportarSolicitudesExcel // Importamos la función para exportar a Excel
+  
 } from './solicitud.controller';
 
 const router: Router = Router();
-
+router.get('/solicitudes/exportar', exportarSolicitudesExcel);
 // Ruta para crear una nueva solicitud (con imagen)
 router.post('/create', upload.single('imagen'), crearSolicitud);
 

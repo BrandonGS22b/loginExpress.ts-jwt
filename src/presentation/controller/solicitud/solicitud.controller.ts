@@ -5,6 +5,9 @@ import { v4 as uuidv4 } from 'uuid'; // Para generar nombres únicos
 import multer from 'multer';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import mongoose from 'mongoose';
+import path from 'path';
+import ExcelJS from 'exceljs';
+
 
 // Configuración de multer para manejar la subida de archivos
 const multerStorage = multer.memoryStorage(); // Usamos memoria temporal para Firebase
@@ -218,5 +221,58 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
   } catch (error) {
     console.error('Error al eliminar la solicitud:', error);
     res.status(500).json({ message: 'Error al eliminar la solicitud' });
+  }
+};
+export const exportarSolicitudesExcel = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const solicitudes = await Solicitud.find().populate('usuario_id', 'name email');
+
+    if (!solicitudes || solicitudes.length === 0) {
+      res.status(404).json({ message: 'No hay solicitudes para exportar' });
+      return;
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Solicitudes');
+
+    worksheet.columns = [
+      { header: 'ID', key: '_id', width: 20 },
+      { header: 'Usuario', key: 'usuario_id', width: 30 },
+      { header: 'Categoría', key: 'categoria', width: 20 },
+      { header: 'Descripción', key: 'descripcion', width: 50 },
+      { header: 'Teléfono', key: 'telefono', width: 15 },
+      { header: 'Departamento', key: 'departamento', width: 20 },
+      { header: 'Ciudad', key: 'ciudad', width: 20 },
+      { header: 'Barrio', key: 'barrio', width: 20 },
+      { header: 'Dirección', key: 'direccion', width: 30 },
+      { header: 'Estado', key: 'estado', width: 15 },
+      { header: 'Fecha de creación', key: 'fecha_creacion', width: 25 },
+    ];
+
+    solicitudes.forEach((solicitud) => {
+      const usuario =
+        typeof solicitud.usuario_id === 'object' && 'name' in solicitud.usuario_id
+          ? solicitud.usuario_id
+          : null;
+    
+      worksheet.addRow({
+        ...solicitud.toObject(),
+        usuario_id: usuario ? usuario.name : solicitud.usuario_id.toString(),
+      });
+    });
+
+    const fileName = `reporte_solicitudes_${uuidv4()}.xlsx`;
+    const filePath = path.join(__dirname, `../../../temp/${fileName}`);
+    await workbook.xlsx.writeFile(filePath);
+
+    res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error('Error al descargar el archivo:', err);
+        res.status(500).send('Error al descargar el archivo');
+      }
+    });
+  } catch (error) {
+    console.error('Error al exportar solicitudes a Excel:', error);
+    res.status(500).json({ message: 'Error al exportar solicitudes' });
   }
 };

@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 
-
-const userSchema = new mongoose.Schema( {
-
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Name is required'],
@@ -24,7 +22,6 @@ const userSchema = new mongoose.Schema( {
     type: String,
     required: false,
   },
-  //se agrega role auxiliar 
   role: {
     type: String,
     required: [true, 'Role is required'],
@@ -59,13 +56,10 @@ const userSchema = new mongoose.Schema( {
 userSchema.set('toJSON', {
   virtuals: true,
   versionKey: false,
-  transform: function( doc, ret, options ) {
+  transform: function (doc, ret) {
     delete ret._id;
     delete ret.password;
   },
-})
-
-
+});
 
 export const UserModel = mongoose.model('User', userSchema);
-
