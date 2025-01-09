@@ -223,6 +223,7 @@ export const eliminarSolicitud = async (req: Request, res: Response): Promise<vo
     res.status(500).json({ message: 'Error al eliminar la solicitud' });
   }
 };
+
 export const exportarSolicitudesExcel = async (req: Request, res: Response): Promise<void> => {
   try {
     const solicitudes = await Solicitud.find().populate('usuario_id', 'name email');
@@ -254,23 +255,19 @@ export const exportarSolicitudesExcel = async (req: Request, res: Response): Pro
         typeof solicitud.usuario_id === 'object' && 'name' in solicitud.usuario_id
           ? solicitud.usuario_id
           : null;
-    
+
       worksheet.addRow({
         ...solicitud.toObject(),
         usuario_id: usuario ? usuario.name : solicitud.usuario_id.toString(),
       });
     });
 
-    const fileName = `reporte_solicitudes_${uuidv4()}.xlsx`;
-    const filePath = path.join(__dirname, `../../../temp/${fileName}`);
-    await workbook.xlsx.writeFile(filePath);
+    // Enviar el archivo como stream
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=reporte_solicitudes.xlsx`);
 
-    res.download(filePath, fileName, (err) => {
-      if (err) {
-        console.error('Error al descargar el archivo:', err);
-        res.status(500).send('Error al descargar el archivo');
-      }
-    });
+    await workbook.xlsx.write(res);
+    res.end();
   } catch (error) {
     console.error('Error al exportar solicitudes a Excel:', error);
     res.status(500).json({ message: 'Error al exportar solicitudes' });
