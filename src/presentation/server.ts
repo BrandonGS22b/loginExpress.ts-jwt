@@ -27,7 +27,7 @@ export class Server {
   async start() {
     // Middlewares
     this.app.use(cors({
-      origin: ['http://localhost:3000', 'http://192.168.1.5:3000'],
+      origin: ['http://localhost:3000', 'http://192.168.1.5:3000','https://proyecto-f7ec6.web.app'],
       credentials: true,
     }));
 
